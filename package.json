@@ -1,0 +1,20 @@
+{
+  "name": "marzipanjs",
+  "version": "0.0.0",
+  "description": "",
+  "main": "",
+  "private": true,
+  "scripts": {
+    "build-all" : "node scripts/build marzipan canvasgraphics pixigraphics",
+
+    "build-marzipan": "node scripts/build marzipan",
+    "build-canvasgraphics": "node scripts/build canvasgraphics",
+    "build-pixigraphics": "node scripts/build pixigraphics"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {},
+  "dependencies": {
+    "rollup": "^2.0.2"
+  }
+}
