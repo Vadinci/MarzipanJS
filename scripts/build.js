@@ -4,6 +4,7 @@ const COMMON_EXTERNAL = [
 ];
 
 const path = require('path');
+const fs = require('fs');
 
 const rollup = require('rollup');
 
@@ -33,9 +34,28 @@ let build = async function (mod) {
 
 //TODO await?
 let run = async function () {
+    let runStart = Date.now();
+    console.log('[BUILDING]');
     for (let ii = 0; ii < toBuild.length; ii++) {
+        let taskStart = Date.now();
+        console.log("building " + toBuild[ii] + "...");
         await build(toBuild[ii]);
+        console.log("\t...done! (" + (Date.now() - taskStart) + "ms)");
     };
+    console.log("[COMPLETED] " + (Date.now() - runStart) + "ms");
 };
 
-run();
+if (toBuild[0] === 'all') {
+    toBuild = [];
+    fs.readdir('./modules', (err, files) => {
+        if (err) {
+            console.error(err);
+            return;
+        }
+        toBuild = files;
+        run();
+    })
+} else {
+    run();
+}
+

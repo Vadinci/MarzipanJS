@@ -5,7 +5,7 @@
   "main": "",
   "private": true,
   "scripts": {
-    "build-all" : "node scripts/build marzipan canvasgraphics pixigraphics",
+    "build-all" : "node scripts/build all",
 
     "build-marzipan": "node scripts/build marzipan",
     "build-canvasgraphics": "node scripts/build canvasgraphics",
