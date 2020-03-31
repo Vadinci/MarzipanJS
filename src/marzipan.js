@@ -30,7 +30,7 @@ let init = function (settings) {
 
     //init graphics (renderer)
     Screen.init(settings.screen || {});
-    renderer = new GLRenderer({
+    renderer = new WebRenderer({
         screen: Screen
     });
 

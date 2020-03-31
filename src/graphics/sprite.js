@@ -1,4 +1,5 @@
 //TODO add pause and resume;
+//TODO documentation
 
 import Dispatcher from "../core/dispatcher";
 import Vector2 from "../math/vector2";
@@ -9,30 +10,61 @@ import Rectangle from "../math/rectangle";
 let Animation = function (settings) {
 	ENSURE(settings);
 
-	let _time = 0;
 	let _loop = settings.loop || false;
-	let _frames = settings.frames || [0];
+	let _isPlaying = false;
 
+	let _frames = settings.frames || [0];
 	let _frameDurations = [];
-	if (settings.frameDurations) {
-		for (let ii = 0; ii < _frames.length; ii++) {
-			_frameDurations[ii] = settings.frameDurations[ii] || (1 / settings.fps) || 0.0167;
-		}
+
+	let _currentFrameIdx = 0;
+	let _currentFrameTime = 0;
+
+	for (let ii = 0; ii < _frames.length; ii++) {
+		let duration = 1 / 24;	//a default speed of 24 frames per second
+		if (settings.fps) duration = 1 / settings.fps;
+		if (settings.frameDurations && settings.frameDurations.length > ii) duration = settings.frameDurations[ii];
+
+		_frameDurations[ii] = duration;
 	}
 
 	let start = function () {
-		_time = 0;
+		_isPlaying = true;
+
+		_currentFrameTime = 0;
+		_currentFrameIdx = 0;
 		animation.emit('start', {});
 	};
 
-	let update = function (data) {
-		_time += data.deltaTime;
+	let stop = function () {
+		_isPlaying = false;
+	};
 
-		//TODO :)
-	}
+	let update = function (data) {
+		if (!_isPlaying) return;
+
+		_currentFrameTime += data.deltaTime;
+
+		while (_currentFrameTime > _frameDurations[_currentFrameIdx]) {
+			_currentFrameTime -= _frameDurations[_currentFrameIdx];
+			_currentFrameIdx++;
+
+			if (_currentFrameIdx >= _frames.length) {
+				animation.emit('complete', {});
+				if (!_loop) {
+					_currentFrameIdx = _frames.length - 1;
+					_isPlaying = false;
+					return;
+				} else {
+					_currentFrameIdx = 0;
+					animation.emit('loop', {});
+				}
+			}
+		}
+	};
 
 	let animation = {
 		start,
+		stop,
 		update
 	};
 	Dispatcher.make(animation);
@@ -40,6 +72,9 @@ let Animation = function (settings) {
 	Object.defineProperties(animation, {
 		isAnimation: {
 			get: () => true
+		},
+		frame: {
+			get: () => _frames[_currentFrameIdx]
 		}
 	});
 
@@ -114,7 +149,7 @@ let Sprite = function (settings) {
 		let oldFrameIdx = _frameIdx;
 		_currentAnimation.update(data);
 		if (_currentAnimation.frameIdx !== oldFrameIdx) {
-			setFrame(_currentAnimation.frameIdx);
+			setFrame(_currentAnimation.frame);
 		}
 	};
 
