@@ -43,8 +43,23 @@ let WebRenderer = function (settings) {
 	};
 	let setAlpha = TODO;
 
-	let drawLine = TODO;
-	let drawRect = TODO;
+	let drawLine = function (start, end, color, width) {
+		_currentContext.beginPath();
+
+		_currentContext.strokeStyle = color;
+		_currentContext.lineWidth = width;
+
+		_currentContext.moveTo(start.x, start.y);
+		_currentContext.lineTo(end.x, end.y);
+
+		_currentContext.stroke();
+	};
+
+	let drawRect = function (start, end, color) {
+		_currentContext.fillStyle = color;
+		_currentContext.fillRect(start.x, start.y, end.x - start.x, end.y - start.y);
+	};
+
 	let drawCircle = TODO;
 	let drawPolygon = TODO;
 

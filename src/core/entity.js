@@ -7,6 +7,7 @@ let Entity = function (settings) {
 
     let _tags = [];
 
+    let _scene;
     let _transform = new Transform();
 
     //TODO tags
@@ -199,6 +200,13 @@ let Entity = function (settings) {
     };
 
     Object.defineProperties(self, {
+        scene: {
+            get: () => _scene,
+            set : v => {
+                if (_scene && v !== undefined) throw "can't set scene twice. Entity needs to be removed first";
+                _scene = v;
+            }
+        },
         tags: {
             get: () => [].concat(_tags)
         },

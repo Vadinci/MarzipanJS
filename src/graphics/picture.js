@@ -7,7 +7,7 @@
  * https://github.com/LuckyKat/Bento/blob/master/js/packedimage.js
  */
 
-export default function(image, area){
+export default function Picture(image, area){
     if (!area){
         //TODO make a rectangle module
         area = {

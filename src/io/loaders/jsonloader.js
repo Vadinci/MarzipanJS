@@ -13,7 +13,7 @@ let JsonLoader = function () {
                 PLAIN_LOADER.load(path)
                     .then(data => {
                         let jsonData = JSON.parse(data);
-                        resolve(yamlData);
+                        resolve(jsonData);
                     })
                     .catch(e => reject(e));
             });

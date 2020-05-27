@@ -1,6 +1,6 @@
 let Vector2 = function (x, y) {
-	this.x = x;
-	this.y = y;
+	this.x = x || 0;
+	this.y = y || 0;
 };
 
 //#region Creation
@@ -61,6 +61,7 @@ Vector2.prototype.setTo = function (other) {
 	this.y = other.y;
 	return this;
 };
+Vector2.prototype.copy = Vector2.prototype.setTo;
 
 Vector2.prototype.set = function (x, y) {
 	this.x = x;
@@ -75,7 +76,7 @@ Vector2.prototype.normalize = function () {
 		return this;
 	}
 	magnitude = Math.sqrt(magnitude);
-	this.divide(magnitude);
+	this.divideScalar(magnitude);
 	return this;
 };
 //#endregion
@@ -90,6 +91,10 @@ Vector2.prototype.sqrMagnitude = function () {
 
 Vector2.prototype.magnitude = function () {
 	return Math.sqrt(this.sqrMagnitude());
+};
+
+Vector2.prototype.angle = function () {
+	return Math.atan2(this.y, this.x);
 };
 
 Vector2.prototype.clone = function () {
@@ -125,6 +130,10 @@ Vector2.divideScalar = function(a, v){
 
 Vector2.normalize = function(a){
 	return a.clone().normalize();
+};
+
+Vector2.copy = function(other){
+	return new Vector2(other.x, other.y);
 };
 //#endregion
 

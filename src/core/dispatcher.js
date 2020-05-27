@@ -4,17 +4,6 @@ let Dispatcher = function () {
     let _newKeys = [];
     let _cleanKeys = [];
 
-    let _sortListeners = function (key) {
-        let idx = _newKeys.indexOf(key);
-        if (idx === -1) return;
-
-        _listeners[key].sort(function (a, b) {
-            return a.priority - b.priority
-        });
-
-        _newKeys.splice(idx, 1);
-    };
-
     let _cleanListeners = function (key) {
         let idx = _cleanKeys.indexOf(key);
         if (idx === -1) return;
@@ -29,9 +18,8 @@ let Dispatcher = function () {
         _cleanKeys.splice(idx, 1);
     };
 
-    let on = function (key, cb, props) {
+    let on = function (key, cb, context) {
         _listeners[key] = _listeners[key] || [];
-        props = props || {};
 
         if (_newKeys.indexOf(key) === -1) {
             _newKeys.push(key);
@@ -40,32 +28,31 @@ let Dispatcher = function () {
         //TODO proper mix-in
         let listener = {
             callback: cb,
-            priority: props.priority || 0,
-            context: props.context || null
+            context: context || null
         };
 
         _listeners[key].push(listener);
     };
 
-    let once = function (key, cb, props) {
-        props = props || {};
-
+    let once = function (key, cb, context) {
         //deregisters itself the first time it's called
         let wrapper = function (data) {
             off(key, wrapper);
-            return cb.call(props.context, data);
+            return cb.call(context, data);
         }
 
-        on(key, wrapper, props);
+        on(key, wrapper, context);
     };
 
-    let off = function (key, cb) {
+    let off = function (key, cb, context) {
         var list = _listeners[key];
         if (!list) return;
 
+        context = context || null;
+
         var ii;
         for (ii = list.length - 1; ii >= 0; ii--) {
-            if (list[ii] && list[ii].callback === cb) {
+            if (list[ii] && list[ii].callback === cb && list[ii].context === context) {
                 list[ii] = undefined;
             }
         }
@@ -79,7 +66,6 @@ let Dispatcher = function () {
         let list = _listeners[key];
         if (!list) return;
 
-        _sortListeners(key);
         _cleanListeners(key);
 
         let ii;

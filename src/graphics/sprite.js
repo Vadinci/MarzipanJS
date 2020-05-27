@@ -169,6 +169,9 @@ let Sprite = function (settings) {
 	Object.defineProperties(sprite, {
 		frame: {
 			get: () => _frame
+		},
+		transform : {
+			get : () => _transform
 		}
 	});
 

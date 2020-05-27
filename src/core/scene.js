@@ -25,6 +25,7 @@ let Scene = function () {
 		for (let ii = 0; ii < _addList.length; ii++) {
 			_entities.push(_addList[ii]);
 			data.entity = _addList[ii];
+			_addList[ii].scene = scene;
 			_addList[ii].start(data);
 
 			_updateOrder.push(_addList[ii]);
@@ -37,6 +38,7 @@ let Scene = function () {
 		for (let ii = 0; ii < _removeList.length; ii++) {
 			data.entity = _removeList[ii];
 			_removeList[ii].die(data);
+			_removeList[ii].scene = undefined;
 
 			_updateOrder.splice(_updateOrder.indexOf(_removeList[ii]), 1);
 			_drawOrder.splice(_drawOrder.indexOf(_removeList[ii]), 1);

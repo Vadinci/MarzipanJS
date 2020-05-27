@@ -1,12 +1,14 @@
-import ModuleManager from './modulemanager';
-
 import Engine from './core/engine';
 import Assets from './core/assets';
-import Input from './core/input';
+import ENSURE from './utils/ensure';
 
+import Input from './core/input';
 import Screen from './graphics/screen';
 import WebRenderer from './graphics/web/webrenderer';
 import GLRenderer from './graphics/gl/glrenderer';
+
+import Random from './math/random';
+import Dispatcher from './core/dispatcher';
 
 
 //default asset loaders
@@ -17,9 +19,15 @@ import PictureLoader from './io/loaders/pictureloader';
 import AudioLoader from './io/loaders/audioloader';
 
 
+
+
 let renderer;
 
+let random = new Random();
+let eventDispatcher = new Dispatcher();
+
 let init = function (settings) {
+    ENSURE(settings);
     //init asssets and loaders
     Assets.init(settings.assets || {});
     Assets.addLoader(new PlainLoader());
@@ -40,13 +48,7 @@ let init = function (settings) {
 };
 
 let Marzipan = {
-    init,
-
-    add: Engine.add,
-    remove: Engine.remove,
-
-    addModule: ModuleManager.addModule,
-    getModule: ModuleManager.getModule
+    init
 };
 
 Object.defineProperties(Marzipan, {
@@ -61,6 +63,15 @@ Object.defineProperties(Marzipan, {
     },
     input: {
         get: () => Input
+    },
+    screen: {
+        get: () => Screen
+    },
+    random: {
+        get: () => random
+    },
+    events: {
+        get: () => eventDispatcher
     }
 });
 

@@ -31,6 +31,12 @@ Dispatcher.make(Screen);
 Object.defineProperties(Screen, {
 	canvas: {
 		get: () => _canvas
+	},
+	width : {
+		get : () => _canvas.width
+	},
+	height : {
+		get : () => _canvas.height
 	}
 });
 
