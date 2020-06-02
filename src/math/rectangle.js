@@ -9,6 +9,13 @@ let Rectangle = function (x, y, width, height) {
 
 //TODO functionality ;)
 
+Rectangle.prototype.set = function (other) {
+	this.x = other.x;
+	this.y = other.y;
+	this.width = other.width;
+	this.height = other.height;
+};
+
 Rectangle.prototype.getCenter = function (point) {
 	let center = new Vector2();
 	center.x = this.x + this.width / 2;

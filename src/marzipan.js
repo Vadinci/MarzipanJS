@@ -18,7 +18,9 @@ import JsonLoader from './io/loaders/jsonloader';
 import PictureLoader from './io/loaders/pictureloader';
 import AudioLoader from './io/loaders/audioloader';
 
-
+//default controllers
+import KeyboardSystem from './io/inputsystems/keyboardsystem';
+import TouchSystem from './io/inputsystems/touchsystem';
 
 
 let renderer;
@@ -42,7 +44,10 @@ let init = function (settings) {
         screen: Screen
     });
 
+    //init controllers
     Input.init(settings.input || {});
+    Input.addSystem(new KeyboardSystem());
+    Input.addSystem(new TouchSystem());
 
     Engine.init(settings.engine || {});
 };

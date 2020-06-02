@@ -116,8 +116,8 @@ Matrix3.multiplyVector = function (mat, vector) {
 
 Matrix3.multiplyVectorDirect = function (mat, vector) {
     //z is 0
-    vector.x = mat[C00] * vector.x + mat[C01] * vector.x + mat[C02] * vector.x;
-    vector.y = mat[C10] * vector.y + mat[C11] * vector.y + mat[C12] * vector.y;
+    vector.x = mat[C00] * vector.x + mat[C01] * vector.x + mat[C02] * vector.x + mat[C20];
+    vector.y = mat[C10] * vector.y + mat[C11] * vector.y + mat[C12] * vector.y + mat[C21];
 
     return vector;
 };

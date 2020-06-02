@@ -83,100 +83,98 @@ let Animation = function (settings) {
 
 let Sprite = function (settings) {
 	ENSURE(settings);
-	let _picture = ENSURE(settings.picture);
+	this._picture = ENSURE(settings.picture);
 
-	let _transform = new Transform();
+	this._transform = new Transform();
 
-	let _origin = settings.origin || new Vector2(0, 0);
-	let _frame = new Rectangle(0, 0, _picture.width, _picture.height);
+	this._origin = settings.origin || new Vector2(0, 0);
+	this._frame = new Rectangle(0, 0, this._picture.width, this._picture.height);
 
-	let _frameIdx = 0;
-	let _frameCountX = 1;
-	let _frameCountY = 1;
+	this._frameIdx = 0;
+	this._frameCountX = 1;
+	this._frameCountY = 1;
 
-	let _currentAnimation = undefined;
-	let _animations = {};
-
-
-	let addAnimation = function (name, animation) {
-		if (_animations[name]) {
-			//TODO throw stuff? It's not wrong to override an animation :/
-		}
-		if (!animation.isAnimation) {
-			//presumably provided settings object rather than an animation object
-			animation = new Animation(animation);
-		}
-		_animations[name] = animation;
-		if (!_currentAnimation) _currentAnimation = animation;
-
-		return animation;
-	};
-
-	let play = function (name, onComplete) {
-		let animation = _animations[name];
-		if (!animation) {
-			console.warn('animation with name ' + name + ' does not exist!');
-			return;
-		}
-		if (onComplete) animation.once('complete', onComplete);
-		_currentAnimation = animation;
-		animation.start();
-
-		return animation;
-	};
-
-	let setFrame = function (idx) {
-		_frameIdx = idx;
-
-		let col = idx % _frameCountX;
-		let row = Math.floor(idx / _frameCountX);
-
-		if (row >= _frameCountY) throw "invalid frame index!";
-
-		_frame.x = _frame.width * col;
-		_frame.y = _frame.height * row;
-	};
-
-
-
-	let added = function (data) {
-		_transform.setParent(data.entity.transform);
-	}
-
-	let update = function (data) {
-		if (!_currentAnimation) return;
-
-		let oldFrameIdx = _frameIdx;
-		_currentAnimation.update(data);
-		if (_currentAnimation.frameIdx !== oldFrameIdx) {
-			setFrame(_currentAnimation.frame);
-		}
-	};
-
-	let draw = function (data) {
-		data.renderer.setTransform(_transform.globalMatrix);
-		data.renderer.drawPicturePart(_picture, _frame.x, _frame.y, _frame.width, _frame.height, -_origin.x, -_origin.y);
-	};
-
-	let sprite = {
-		setFrame,
-
-		added,
-		update,
-		draw
-	};
-
-	Object.defineProperties(sprite, {
-		frame: {
-			get: () => _frame
-		},
-		transform : {
-			get : () => _transform
-		}
-	});
-
-	return sprite;
+	this._currentAnimation = undefined;
+	this._animations = {};
 };
+
+
+Sprite.prototype.addAnimation = function (name, animation) {
+	if (this._animations[name]) {
+		//TODO throw stuff? It's not wrong to override an animation :/
+	}
+	if (!animation.isAnimation) {
+		//presumably provided settings object rather than an animation object
+		animation = new Animation(animation);
+	}
+	this._animations[name] = animation;
+	if (!this._currentAnimation) this._currentAnimation = animation;
+
+	return animation;
+};
+
+Sprite.prototype.play = function (name, onComplete) {
+	let animation = this._animations[name];
+	if (!animation) {
+		console.warn('animation with name ' + name + ' does not exist!');
+		return;
+	}
+	if (onComplete) animation.once('complete', onComplete);
+	this._currentAnimation = animation;
+	animation.start();
+
+	return animation;
+};
+
+Sprite.prototype.setFrame = function (idx) {
+	this._frameIdx = idx;
+
+	let col = idx % this._frameCountX;
+	let row = Math.floor(idx / this._frameCountX);
+
+	if (row >= this._frameCountY) throw "invalid frame index!";
+
+	this._frame.x = this._frame.width * col;
+	this._frame.y = this._frame.height * row;
+};
+
+
+/**
+ * Component functions
+ */
+Sprite.prototype.added = function (data) {
+	this._transform.setParent(data.entity.transform);
+};
+
+Sprite.prototype.update = function (data) {
+	if (!this._currentAnimation) return;
+
+	let oldFrameIdx = this._frameIdx;
+	this._currentAnimation.update(data);
+	if (this._currentAnimation.frameIdx !== oldFrameIdx) {
+		setFrame(this._currentAnimation.frame);
+	}
+};
+
+Sprite.prototype.draw = function (data) {
+	data.renderer.setTransform(this._transform.globalMatrix);
+	
+	data.renderer.drawPicturePart(this._picture,
+		this._frame.x, this._frame.y,
+		this._frame.width, this._frame.height,
+		-this._origin.x, -this._origin.y,
+		this._frame.width, this._frame.height
+	);
+};
+
+Object.defineProperties(Sprite.prototype, {
+	frame: {
+		get: function () { return this._frame; }
+	},
+	transform: {
+		get: function () { return this._transform; }
+	}
+});
 
 Sprite.Animation = Animation;
 
