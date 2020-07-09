@@ -23,8 +23,9 @@ let PictureLoader = function () {
                     resolve(picture);
                 };
 
-                let onError = err => {
-                    reject(err);
+                let onError = e => {
+                    let error = new Error("error loading picture @"+path);
+                    reject(error);
                 };
 
                 img.addEventListener('load', onLoad);

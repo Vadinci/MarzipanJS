@@ -1,7 +1,7 @@
 import Dispatcher from "./dispatcher";
 import Transform from "../math/transform";
 
-let Scene = function () {
+let Scene = function (settings) {
 	let _entities = [];
 	let _updateOrder = [];
 	let _drawOrder = [];
@@ -9,69 +9,75 @@ let Scene = function () {
 	let _addList = [];
 	let _removeList = [];
 
-	let _name = 'scene';
+	let _name = settings.name || 'scene';
+	let _layer = settings.layer || 0; 
 
 	let _transform = new Transform();
 
-	let update = function (data) {
-		scene.emit('preUpdate', data);
+	let start = function (gameData) {
+		scene.emit('start');
+
+		_handleAddList(gameData);
+		_handleRemoveList(gameData);
+		_sortEntities();
 
 		for (let ii = _updateOrder.length - 1; ii >= 0; --ii) {
-			data.entity = _updateOrder[ii];
-			_updateOrder[ii].update(data);
+			gameData.entity = _updateOrder[ii];
+			_updateOrder[ii].start(gameData);
 		}
-
-		//check if any entities need to be added
-		for (let ii = 0; ii < _addList.length; ii++) {
-			_entities.push(_addList[ii]);
-			data.entity = _addList[ii];
-			_addList[ii].scene = scene;
-			_addList[ii].start(data);
-
-			_updateOrder.push(_addList[ii]);
-			_drawOrder.push(_addList[ii]);
-			_addList[ii].transform.setParent(_transform);
-		}
-		_addList = [];
-
-		//check if any entities need to be removed
-		for (let ii = 0; ii < _removeList.length; ii++) {
-			data.entity = _removeList[ii];
-			_removeList[ii].die(data);
-			_removeList[ii].scene = undefined;
-
-			_updateOrder.splice(_updateOrder.indexOf(_removeList[ii]), 1);
-			_drawOrder.splice(_drawOrder.indexOf(_removeList[ii]), 1);
-			_entities.splice(_entities.indexOf(_removeList[ii]), 1);
-		}
-		_removeList = [];
-
-		sortEntities()
-
-		scene.emit('postUpdate', data);
 	};
 
-	let draw = function (data) {
-		scene.emit('preDraw', data);
+	let update = function (gameData) {
+		scene.emit('preUpdate', gameData);
 
-		for (let ii = 0; ii < _drawOrder.length; ii++) {
-			data.entity = _drawOrder[ii];
-			_drawOrder[ii].draw(data);
+		for (let ii = _updateOrder.length - 1; ii >= 0; --ii) {
+			gameData.entity = _updateOrder[ii];
+			_updateOrder[ii].update(gameData);
 		}
 
-		scene.emit('postDraw', data);
+		_handleAddList(gameData);
+		_handleRemoveList(gameData);
+
+		_sortEntities()
+
+		scene.emit('postUpdate', gameData);
+	};
+
+	let draw = function (gameData) {
+		scene.emit('preDraw', gameData);
+
+		for (let ii = 0; ii < _drawOrder.length; ii++) {
+			gameData.entity = _drawOrder[ii];
+			_drawOrder[ii].draw(gameData);
+		}
+
+		scene.emit('postDraw', gameData);
 	};
 
 
-	let drawDebug = function (data) {
-		scene.emit('preDrawDebug', data);
+	let drawDebug = function (gameData) {
+		scene.emit('preDrawDebug', gameData);
 
 		for (let ii = 0; ii < _drawOrder.length; ii++) {
-			data.entity = _drawOrder[ii];
-			_drawOrder[ii].drawDebug(data);
+			gameData.entity = _drawOrder[ii];
+			_drawOrder[ii].drawDebug(gameData);
 		}
 
-		scene.emit('postDrawDebug', data);
+		scene.emit('postDrawDebug', gameData);
+	};
+
+	let die = function (gameData) {
+		scene.emit('die');
+
+
+		_handleAddList(gameData);
+		_handleRemoveList(gameData);
+		_sortEntities();
+
+		for (let ii = _updateOrder.length - 1; ii >= 0; --ii) {
+			gameData.entity = _updateOrder[ii];
+			_updateOrder[ii].die(gameData);
+		}
 	};
 
 
@@ -89,7 +95,34 @@ let Scene = function () {
 		_removeList.push(entity);
 	};
 
-	let sortEntities = function () {
+	let _handleAddList = function (gameData) {
+		for (let ii = 0; ii < _addList.length; ii++) {
+			_entities.push(_addList[ii]);
+			gameData.entity = _addList[ii];
+			_addList[ii].scene = scene;
+			_addList[ii].start(gameData);
+
+			_updateOrder.push(_addList[ii]);
+			_drawOrder.push(_addList[ii]);
+			_addList[ii].transform.setParent(_transform);
+		}
+		_addList = [];
+	};
+
+	let _handleRemoveList = function (gameData) {
+		for (let ii = 0; ii < _removeList.length; ii++) {
+			gameData.entity = _removeList[ii];
+			_removeList[ii].die(gameData);
+			_removeList[ii].scene = undefined;
+
+			_updateOrder.splice(_updateOrder.indexOf(_removeList[ii]), 1);
+			_drawOrder.splice(_drawOrder.indexOf(_removeList[ii]), 1);
+			_entities.splice(_entities.indexOf(_removeList[ii]), 1);
+		}
+		_removeList = [];
+	};
+
+	let _sortEntities = function () {
 		//sort update order
 		//TODO in place sorting
 		_updateOrder.sort(function (a, b) {
@@ -106,8 +139,8 @@ let Scene = function () {
 
 	let getByName = function (name) {
 		let result = [];
-		for (let ii = 0; ii < entities.length; ii++) {
-			if (entities[ii].name === name) result.push(entities[ii]);
+		for (let ii = 0; ii < _entities.length; ii++) {
+			if (_entities[ii].name === name) result.push(_entities[ii]);
 		}
 		return result;
 	};
@@ -116,16 +149,18 @@ let Scene = function () {
 		tags = [].concat(tags); //force to array;
 
 		let result = [];
-		for (let ii = 0; ii < entities.length; ii++) {
-			if (entities[ii].hasTags(tags)) result.push(entities[ii]);
+		for (let ii = 0; ii < _entities.length; ii++) {
+			if (_entities[ii].hasTags(tags)) result.push(_entities[ii]);
 		}
 		return result;
 	};
 
 	let scene = {
+		start,
 		update,
 		draw,
 		drawDebug,
+		die,
 
 		addEntity,
 		removeEntity,
@@ -140,8 +175,24 @@ let Scene = function () {
 			name: {
 				get: () => _name
 			},
+			layer: {
+				get: () => _layer
+			},
+
+
 			transform: {
 				get: () => _transform
+			},
+
+			position : {
+				get : () => _transform.position
+			},
+			scale : {
+				get : () => _transform.scale
+			},
+			rotation : {
+				get : () => _transform.rotation,
+				set : v => _transform.rotation = v
 			}
 		}
 	);

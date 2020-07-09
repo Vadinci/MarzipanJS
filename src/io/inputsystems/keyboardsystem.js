@@ -5,6 +5,7 @@ import Dispatcher from '../../core/dispatcher';
 let KeyboardSystem = function () {
 	let _keyStates = [];
 	let _dirtyKeys = [];
+	let _keyBindings = {};
 
 	let init = function (canvas) {
 		//init keystate array
@@ -43,11 +44,11 @@ let KeyboardSystem = function () {
 	let _handleKeyDown = function (e) {
 		let key = e.keyCode ? e.keyCode : e.which;
 
-		let state = keyStates[key];
+		let state = _keyStates[key];
 		if (state.down === false) {
 			state.pressed = true;
 			state.down = true;
-			dirtyKeys.push(key);
+			_dirtyKeys.push(key);
 
 			system.emit('down-' + KeyNames[key]);
 			system.emit('down', key);
@@ -57,11 +58,11 @@ let KeyboardSystem = function () {
 	let _handleKeyUp = function (e) {
 		let key = e.keyCode ? e.keyCode : e.which;
 
-		let state = keyStates[key];
+		let state = _keyStates[key];
 		if (state.down === true) {
 			state.released = true;
 			state.down = false;
-			dirtyKeys.push(key);
+			_dirtyKeys.push(key);
 
 			system.emit('up-' + KeyNames[key]);
 			system.emit('up', key);
@@ -69,36 +70,36 @@ let KeyboardSystem = function () {
 	};
 
 	let bindKeys = function (name, keyCodes) {
-		if (keyBindings[name] === undefined) {
-			keyBindings[name] = [];
+		if (_keyBindings[name] === undefined) {
+			_keyBindings[name] = [];
 		}
 		keyCodes = [].concat(keyCodes);
 		for (let ii = 0; ii < keyCodes.length; ii++) {
-			if (keyBindings[name].indexOf(keyCodes[ii]) === -1) {
-				keyBindings[name].push(keyCodes[ii]);
+			if (_keyBindings[name].indexOf(keyCodes[ii]) === -1) {
+				_keyBindings[name].push(keyCodes[ii]);
 			}
 		}
 	};
 
 	let unbindKeys = function (name, keyCodes) {
-		if (keyBindings[name] === undefined) {
+		if (_keyBindings[name] === undefined) {
 			return;
 		}
 		keyCodes = [].concat(keyCodes);
 		for (let ii = 0; ii < keyCodes.length; ii++) {
-			let idx = keyBindings[name].indexOf(keyCodes[ii])
+			let idx = _keyBindings[name].indexOf(keyCodes[ii])
 			if (idx !== -1) {
-				keyBindings[name].splice(idx, 1);
+				_keyBindings[name].splice(idx, 1);
 			}
 		}
-		if (keyBindings[name].length === 0) {
-			delete keyBindings[name];
+		if (_keyBindings[name].length === 0) {
+			delete _keyBindings[name];
 		}
 	};
 
 	let getBoundKeys = function (keys) {
 		if (typeof keys === 'string') {
-			keys = keyBindings[keys];
+			keys = _keyBindings[keys];
 			return (keys === undefined) ? [] : keys;
 		} else if (keys === -1) {
 			//'any' key

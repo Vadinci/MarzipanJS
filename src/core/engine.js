@@ -22,6 +22,8 @@ let mspf = 1000 / fps;
 let isRunning = false;
 
 let _scenes = [];
+let _addList = [];
+let _removeList = [];
 
 let tick = function () {
     let deltaTime;
@@ -35,6 +37,8 @@ let tick = function () {
     previousTime = currentTime;
 
     accumulatedTime += deltaTime;
+
+    ticks++;
 
     //prevent becoming too big
     if (accumulatedTime > 200) {
@@ -56,81 +60,100 @@ let tick = function () {
 };
 
 let update = function (dt) {
-    let ii;
-    let idx;
-    let data = {};
-
     frame++;
 
-    data.deltaTime = dt;
-    data.currentTime = currentTime;
-    data.runningTime = runningTime;
-    data.frame = frame;
+    let gameData = _getGameData();
+    gameData.deltaTime = dt;
 
-    module.emit('preUpdate', data);
+    module.emit('preUpdate', gameData);
 
-    for (let ii = 0; ii < _scenes.length; ii++) {
-        _scenes[ii].update(data);
+    //we update in reverse order. This way scenes on 'top' get updated first and have control over the scenes below them
+    for (let ii = _scenes.length - 1; ii >= 0; ii--) {
+        _scenes[ii].update(gameData);
     }
 
-    module.emit('postUpdate', data);
+    _handleAddList();
+    _handleRemoveList();
+
+    module.emit('postUpdate', gameData);
 };
 
 let draw = function () {
-    let ii;
-    let idx;
-    let data = {};
-
-    data.currentTime = currentTime;
-    data.runningTime = runningTime;
-    data.frame = frame;
-
-    data.renderer = Marzipan.renderer;
+    let gameData = _getGameData();
+    gameData.renderer = Marzipan.renderer;
 
     Marzipan.renderer.setTransform(Matrix3.identity());
     Marzipan.renderer.clear();
 
-    module.emit('preDraw', data);
+    module.emit('preDraw', gameData);
 
     for (let ii = 0; ii < _scenes.length; ii++) {
-        _scenes[ii].draw(data);
+        _scenes[ii].draw(gameData);
     }
 
-    module.emit('postDraw', data);
+    module.emit('postDraw', gameData);
 };
 
 let drawDebug = function () {
-    let ii;
-    let idx;
-    let data = {};
-
-    data.currentTime = currentTime;
-    data.runningTime = runningTime;
-    data.frame = frame;
-
-    data.renderer = Marzipan.renderer;
+    let gameData = _getGameData();
+    gameData.renderer = Marzipan.renderer;
 
     Marzipan.renderer.setTransform(Matrix3.identity());
 
-    module.emit('preDrawDebug', data);
+    module.emit('preDrawDebug', gameData);
 
     for (let ii = 0; ii < _scenes.length; ii++) {
-        _scenes[ii].drawDebug(data);
+        _scenes[ii].drawDebug(gameData);
     }
 
-    module.emit('postDrawDebug', data);
+    module.emit('postDrawDebug', gameData);
 };
 
 let addScene = function (scene) {
     let idx = _scenes.indexOf(scene);
     if (idx !== -1) throw "scene already added!";
-    _scenes.push(scene);
+
+    _addList.push(scene);
 };
 
 let removeScene = function (scene) {
     let idx = _scenes.indexOf(scene);
     if (idx === -1) throw "scene wasn't added!";
-    _scenes.splice(idx, 1);
+    _removeList.push(scene);
+};
+
+let _getGameData = function () {
+    let gameData = {};
+
+    gameData.currentTime = currentTime;
+    gameData.runningTime = runningTime;
+    gameData.frame = frame;
+    gameData.ticks = ticks;
+
+    return gameData;
+};
+
+let _handleAddList = function (gameData) {
+    for (let ii = 0; ii < _addList.length; ii++) {
+        _scenes.push(_addList[ii]);
+        _addList[ii].start(_getGameData());
+    }
+
+    if (_addList.length !== 0) {
+        _scenes.sort((a, b) => {
+            return a.layer - b.layer;
+        });
+    }
+
+    _addList = [];
+};
+
+let _handleRemoveList = function (gameData) {
+    for (let ii = 0; ii < _removeList.length; ii++) {
+        _removeList[ii].die(_getGameData());
+        _scenes.splice(_scenes.indexOf(_removeList[ii]), 1);
+    }
+    _removeList = [];
 };
 
 let getByName = function (name) {

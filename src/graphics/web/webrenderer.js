@@ -31,8 +31,13 @@ let WebRenderer = function (settings) {
 	};
 
 	let translate = TODO;
-	let scale = TODO;
+
+	let scale = function (sx, sy) {
+		_currentContext.scale(sx, sy);
+	};
+
 	let rotate = TODO;
+
 	let setTransform = function (transform) {
 		//TODO transform the matrix object to conform to the new DomMatrix object?
 		_currentContext.setTransform(
@@ -60,7 +65,17 @@ let WebRenderer = function (settings) {
 		_currentContext.fillRect(start.x, start.y, end.x - start.x, end.y - start.y);
 	};
 
-	let drawCircle = TODO;
+	let drawCircle = function (pos, radius, color, width) {
+		_currentContext.beginPath();
+
+		_currentContext.strokeStyle = color;
+		_currentContext.lineWidth = width;
+
+		_currentContext.arc(pos.x, pos.y, radius, 0, Math.PI * 2);
+
+		_currentContext.stroke();
+	};
+
 	let drawPolygon = TODO;
 
 	let drawPicture = function (picture, x, y) {

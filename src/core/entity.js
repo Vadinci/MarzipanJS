@@ -1,3 +1,5 @@
+//TODO not super happy about having to check if a function (e.g. update) exists before calling it. Some way of guaranteeing it (even if it means an empty stub) would be nice
+
 import Dispatcher from './dispatcher';
 import Transform from '../math/transform';
 
@@ -10,73 +12,66 @@ let Entity = function (settings) {
     let _scene;
     let _transform = new Transform();
 
+    let _tick = 0;
+
     //TODO tags
 
-    //all functions
-    let _componentCalls = {
-        start: [],
-        update: [],
-        preDraw: [],
-        draw: [],
-        drawDebug: [],
-        postDraw: [],
-        die: []
-    };
-
     let start = function (data) {
-        for (let ii = 0; ii < _componentCalls.start.length; ii++) {
-            let comp = _components[_componentCalls.start[ii]];
-            comp.start.call(comp, data);
+        for (let ii = 0; ii < _components.length; ii++) {
+            let comp = _components[ii];
+            if (comp.start) comp.start.call(comp, data);
         }
     };
 
     let die = function (data) {
-        for (let ii = 0; ii < _componentCalls.die.length; ii++) {
-            let comp = _components[_componentCalls.die[ii]];
-            comp.die.call(comp, data);
+        for (let ii = 0; ii < _components.length; ii++) {
+            let comp = _components[ii];
+            if (comp.die) comp.die.call(comp, data);
         }
     };
 
     let update = function (data) {
-        for (let ii = 0; ii < _componentCalls.update.length; ii++) {
-            let comp = _components[_componentCalls.update[ii]];
-            comp.update.call(comp, data);
+        _tick++;
+        
+        for (let ii = 0; ii < _components.length; ii++) {
+            let comp = _components[ii];
+            if (comp.update) comp.update.call(comp, data);
         }
     };
 
     let draw = function (data) {
-        for (let ii = 0; ii < _componentCalls.preDraw.length; ii++) {
-            let comp = _components[_componentCalls.preDraw[ii]];
-            comp.preDraw.call(comp, data);
+        for (let ii = 0; ii < _components.length; ii++) {
+            let comp = _components[ii];
+            if (comp.preDraw) comp.preDraw.call(comp, data);
         }
 
-        for (let ii = 0; ii < _componentCalls.draw.length; ii++) {
-            let comp = _components[_componentCalls.draw[ii]];
-            comp.draw.call(comp, data);
+        for (let ii = 0; ii < _components.length; ii++) {
+            let comp = _components[ii];
+            if (comp.draw) comp.draw.call(comp, data);
         }
 
         //reversed loop
-        for (let ii = _componentCalls.postDraw.length - 1; ii >= 0; ii--) {
-            let comp = _components[_componentCalls.postDraw[ii]];
-            comp.postDraw.call(comp, data);
+        for (let ii = _components.length - 1; ii >= 0; ii--) {
+            let comp = _components[ii];
+            if (comp.postDraw) comp.postDraw.call(comp, data);
         }
     };
 
     let drawDebug = function (data) {
-        for (let ii = 0; ii < _componentCalls.preDraw.length; ii++) {
-            let comp = _components[_componentCalls.preDraw[ii]];
-            comp.preDraw.call(comp, data);
+        for (let ii = 0; ii < _components.length; ii++) {
+            let comp = _components[ii];
+            if (comp.preDraw) comp.preDraw.call(comp, data);
         }
 
-        for (let ii = 0; ii < _componentCalls.drawDebug.length; ii++) {
-            let comp = _components[_componentCalls.drawDebug[ii]];
-            comp.drawDebug.call(comp, data);
+        for (let ii = 0; ii < _components.length; ii++) {
+            let comp = _components[ii];
+            if (comp.drawDebug) comp.drawDebug.call(comp, data);
         }
 
         //reversed loop
-        for (let ii = _componentCalls.postDraw.length - 1; ii >= 0; ii--) {
-            let comp = _components[_componentCalls.postDraw[ii]];
-            comp.postDraw.call(comp, data);
+        for (let ii = _components.length - 1; ii >= 0; ii--) {
+            let comp = _components[ii];
+            if (comp.postDraw) comp.postDraw.call(comp, data);
         }
     };
 
@@ -89,15 +84,9 @@ let Entity = function (settings) {
         _components.push(component);
         idx = _components.length - 1;
 
-        component.added && component.added({
+        if (component.added) component.added.call(component, {
             entity: self
         });
-
-        for (let name in _componentCalls) {
-            if (component[name]) {
-                _componentCalls[name].push(idx);
-            }
-        }
 
         return component;
     };
@@ -128,16 +117,8 @@ let Entity = function (settings) {
             console.warn('component ' + component.name + ' was not added to entity ' + self.name);
             return;
         }
-        component.die && component.die();
+        if (component.die) component.die.call(component);
         _components.splice(idx, 1);
-
-        for (let key in _componentCalls) {
-            let list = _componentCalls[key];
-            for (let ii = list.length - 1; ii >= 0; --ii) {
-                if (list[ii] === idx) list.splice(ii, 1);
-                if (list[ii] > idx) list[ii]--;
-            }
-        }
     };
 
 
@@ -202,7 +183,7 @@ let Entity = function (settings) {
     Object.defineProperties(self, {
         scene: {
             get: () => _scene,
-            set : v => {
+            set: v => {
                 if (_scene && v !== undefined) throw "can't set scene twice. Entity needs to be removed first";
                 _scene = v;
             }
@@ -210,8 +191,25 @@ let Entity = function (settings) {
         tags: {
             get: () => [].concat(_tags)
         },
+
+        tick : {
+            get : () => _tick
+        },
+
+
         transform: {
             get: () => _transform
+        },
+
+        position : {
+            get : () => _transform.position
+        },
+        scale : {
+            get : () => _transform.scale
+        },
+        rotation : {
+            get : () => _transform.rotation,
+            set : v => _transform.rotation = v
         }
     })
 
