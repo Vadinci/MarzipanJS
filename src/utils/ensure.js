@@ -1,4 +1,4 @@
 export default val => {
-	if (val === void (0)) throw "value is required!";
+	if (val === void (0)) throw new Error("value is required!");
 	return val;
 };

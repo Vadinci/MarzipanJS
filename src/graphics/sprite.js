@@ -132,7 +132,7 @@ Sprite.prototype.setFrame = function (idx) {
 	let col = idx % this._frameCountX;
 	let row = Math.floor(idx / this._frameCountX);
 
-	if (row >= this._frameCountY) throw "invalid frame index!";
+	if (row >= this._frameCountY) throw new RangeError("frame index out of range!");
 
 	this._frame.x = this._frame.width * col;
 	this._frame.y = this._frame.height * row;

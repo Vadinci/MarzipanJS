@@ -1,8 +1,4 @@
-//TODO ENSURE is being used in multiple places. Clean way of centralizing it?
-const ENSURE = val => {
-    if (val === void (0)) throw "value is required!";
-    return val;
-};
+import ENSURE from '../utils/ensure';
 
 let AssetLoader = function (settings) {
     ENSURE(settings);

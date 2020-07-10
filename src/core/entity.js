@@ -184,7 +184,7 @@ let Entity = function (settings) {
         scene: {
             get: () => _scene,
             set: v => {
-                if (_scene && v !== undefined) throw "can't set scene twice. Entity needs to be removed first";
+                if (_scene && v !== undefined) throw new Error("can't set Scene twice. Entity needs to be removed first");
                 _scene = v;
             }
         },

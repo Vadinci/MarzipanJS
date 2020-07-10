@@ -11,7 +11,7 @@ const createShader = function (gl, type, source) {
 
 	console.warn(gl.getShaderInfoLog(shader));
 	gl.deleteShader(shader);
-	throw "problem compiling shader!";
+	throw new Error("problem compiling shader!");
 };
 
 let Shader = function () {
@@ -43,7 +43,7 @@ let Shader = function () {
 
 		console.warn(gl.getProgramInfoLog(program));
 		gl.deleteProgram(program);
-		throw "Error linking program";
+		throw new Error("Error linking program");
 	};
 
 	let program = {
@@ -55,7 +55,7 @@ let Shader = function () {
 	Object.defineProperties(program, {
 		glProgram: {
 			get: () => {
-				if (!_isLinked) throw "can't use unlinked GL program";
+				if (!_isLinked) throw new Error("can't use unlinked GL program");
 				return _glProgram;
 			}
 		}

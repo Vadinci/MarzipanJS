@@ -111,14 +111,14 @@ let drawDebug = function () {
 
 let addScene = function (scene) {
     let idx = _scenes.indexOf(scene);
-    if (idx !== -1) throw "scene already added!";
+    if (idx !== -1) throw new Error("scene already added!");
 
     _addList.push(scene);
 };
 
 let removeScene = function (scene) {
     let idx = _scenes.indexOf(scene);
-    if (idx === -1) throw "scene wasn't added!";
+    if (idx === -1) throw new Error("scene wasn't added!");
     _removeList.push(scene);
 };
 

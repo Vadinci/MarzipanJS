@@ -21,7 +21,7 @@ let GLRenderer = function (settings) {
 
 	if (!gl) {
 		TODO();
-		throw "WebGL is not supported!";
+		throw new Error("WebGL is not supported!");
 	}
 
 	let clear = function () {
