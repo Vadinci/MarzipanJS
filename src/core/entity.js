@@ -14,8 +14,6 @@ let Entity = function (settings) {
 
     let _tick = 0;
 
-    //TODO tags
-
     let start = function (data) {
         for (let ii = 0; ii < _components.length; ii++) {
             let comp = _components[ii];
@@ -139,7 +137,7 @@ let Entity = function (settings) {
     };
 
     let hasTags = function (tags) {
-        return _tags.reduce((a, b) => hasTag(b) && a, true);
+        return tags.reduce((a, b) => hasTag(b) && a, true);
     };
 
     let removeTag = function (tag) {

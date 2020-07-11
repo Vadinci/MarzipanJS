@@ -20,11 +20,6 @@ let Scene = function (settings) {
 		_handleAddList(gameData);
 		_handleRemoveList(gameData);
 		_sortEntities();
-
-		for (let ii = _updateOrder.length - 1; ii >= 0; --ii) {
-			gameData.entity = _updateOrder[ii];
-			_updateOrder[ii].start(gameData);
-		}
 	};
 
 	let update = function (gameData) {

@@ -6,6 +6,7 @@ import Vector2 from "../math/vector2";
 import ENSURE from "../utils/ensure";
 import Transform from "../math/transform";
 import Rectangle from "../math/rectangle";
+import Marzipan from "../marzipan";
 
 let Animation = function (settings) {
 	ENSURE(settings);
@@ -83,7 +84,7 @@ let Animation = function (settings) {
 
 let Sprite = function (settings) {
 	ENSURE(settings);
-	this._picture = ENSURE(settings.picture);
+	this._picture = settings.picture || Marzipan.assets.get('picture', settings.pictureName);
 
 	this._transform = new Transform();
 

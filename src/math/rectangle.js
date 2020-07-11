@@ -39,9 +39,16 @@ Rectangle.prototype.enclose = function (point) {
 		this.height += point.y - (this.y + this.height);
 	}
 
-	console.log(this);
-
 	return this;
+};
+
+Rectangle.prototype.contains = function (point) {
+	if (point.x < this.x) return false;
+	if (point.x > this.x + this.width) return false;
+	if (point.y < this.y) return false;
+	if (point.y > this.y + this.height) return false;
+	
+	return true;
 };
 
 Rectangle.prototype.toString = function () {
