@@ -65,6 +65,9 @@ Transform.prototype.removeChild = function (other) {
 
 Transform.prototype.setParent = function (other) {
     if (this._parent === other) return;
+    if (this._parent){
+        this._parent.removeChild(this);
+    }
     this._parent = other;
     if (other) other.addChild(this);
 };

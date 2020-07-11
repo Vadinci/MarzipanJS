@@ -104,7 +104,9 @@ let Scene = function (settings) {
 
 			_updateOrder.push(_addList[ii]);
 			_drawOrder.push(_addList[ii]);
-			_addList[ii].transform.setParent(_transform);
+
+			if (!_addList[ii].transform.parent)
+				_addList[ii].transform.setParent(_transform);
 		}
 		_addList = [];
 	};
@@ -118,6 +120,9 @@ let Scene = function (settings) {
 			_updateOrder.splice(_updateOrder.indexOf(_removeList[ii]), 1);
 			_drawOrder.splice(_drawOrder.indexOf(_removeList[ii]), 1);
 			_entities.splice(_entities.indexOf(_removeList[ii]), 1);
+
+			if (_addList[ii].transform.parent === _transform)
+				_addList[ii].transform.setParent(null);
 		}
 		_removeList = [];
 	};

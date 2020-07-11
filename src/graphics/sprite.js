@@ -88,11 +88,11 @@ let Sprite = function (settings) {
 	this._transform = new Transform();
 
 	this._origin = settings.origin || new Vector2(0, 0);
-	this._frame = new Rectangle(0, 0, this._picture.width, this._picture.height);
+	this._frame = new Rectangle(0, 0, settings.frameWidth || this._picture.width, settings.frameHeight || this._picture.height);
 
 	this._frameIdx = 0;
-	this._frameCountX = 1;
-	this._frameCountY = 1;
+	this._frameCountX = Math.floor(this._picture.width / this._frame.width);
+	this._frameCountY = Math.floor(this._picture.height / this._frame.height);
 
 	this._currentAnimation = undefined;
 	this._animations = {};
