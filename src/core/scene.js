@@ -27,7 +27,8 @@ let Scene = function (settings) {
 
 		for (let ii = _updateOrder.length - 1; ii >= 0; --ii) {
 			gameData.entity = _updateOrder[ii];
-			_updateOrder[ii].update(gameData);
+			if(!gameData.entity.active) continue;
+			gameData.entity.update(gameData);
 		}
 
 		_handleAddList(gameData);
@@ -43,7 +44,8 @@ let Scene = function (settings) {
 
 		for (let ii = 0; ii < _drawOrder.length; ii++) {
 			gameData.entity = _drawOrder[ii];
-			_drawOrder[ii].draw(gameData);
+			if(!gameData.entity.visible) continue;
+			gameData.entity.draw(gameData);
 		}
 
 		scene.emit('postDraw', gameData);
@@ -55,7 +57,8 @@ let Scene = function (settings) {
 
 		for (let ii = 0; ii < _drawOrder.length; ii++) {
 			gameData.entity = _drawOrder[ii];
-			_drawOrder[ii].drawDebug(gameData);
+			if(!gameData.entity.visible) continue;
+			gameData.entity.drawDebug(gameData);
 		}
 
 		scene.emit('postDrawDebug', gameData);

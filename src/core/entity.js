@@ -157,6 +157,8 @@ let Entity = function (settings) {
         name: settings.name || 'entity',
         z: settings.z || 0,
         priority: settings.priority || 0,
+        visible : true,
+        active : true,
 
         start: start,
         update: update,
