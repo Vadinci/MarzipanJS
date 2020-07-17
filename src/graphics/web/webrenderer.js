@@ -87,8 +87,8 @@ let WebRenderer = function (settings) {
 	};
 
 	let drawImage = function (image, sx, sy, sw, sh, dx, dy, dw, dh) {
-		_currentContext.drawImage(picture.image, picture.x, picture.y, picture.width, picture.height, x, y, picture.width, picture.height);
-	}
+		_currentContext.drawImage(image, sx, sy, sw, sh, dx, dy, dw, dh);
+	};
 
 	return {
 		save,

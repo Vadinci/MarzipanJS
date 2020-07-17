@@ -136,6 +136,10 @@ let Entity = function (settings) {
         return _tags.indexOf(tag) !== -1;
     };
 
+    let hasAnyTag = function (tags) {
+        return tags.reduce((a, b) => hasTag(b) || a, false);
+    };
+
     let hasTags = function (tags) {
         return tags.reduce((a, b) => hasTag(b) && a, true);
     };
@@ -175,6 +179,7 @@ let Entity = function (settings) {
         addTag: addTag,
         addTags: addTags,
         hasTag: hasTag,
+        hasAnyTag : hasAnyTag,
         hasTags: hasTags,
         removeTag: removeTag,
         removeTags: removeTags

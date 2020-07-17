@@ -119,8 +119,8 @@ let Scene = function (settings) {
 			_drawOrder.splice(_drawOrder.indexOf(_removeList[ii]), 1);
 			_entities.splice(_entities.indexOf(_removeList[ii]), 1);
 
-			if (_addList[ii].transform.parent === _transform)
-				_addList[ii].transform.setParent(null);
+			if (_removeList[ii].transform.parent === _transform)
+				_removeList[ii].transform.setParent(null);
 		}
 		_removeList = [];
 	};
