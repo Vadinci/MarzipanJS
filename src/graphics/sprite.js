@@ -153,7 +153,7 @@ Sprite.prototype.update = function (data) {
 	let oldFrameIdx = this._frameIdx;
 	this._currentAnimation.update(data);
 	if (this._currentAnimation.frameIdx !== oldFrameIdx) {
-		setFrame(this._currentAnimation.frame);
+		this.setFrame(this._currentAnimation.frame);
 	}
 };
 

@@ -5,6 +5,12 @@ let _canvas;
 let _targetWidth = 480;
 let _targetHeight = 640;
 
+let _screenWidth = _targetWidth;
+let _screenHeight = _targetHeight;
+
+let _contentWidth = _targetWidth;
+let _contentHeight = _targetHeight;
+
 let _resizeTaskId = null;
 
 //TODO listen for screen resize
@@ -46,22 +52,36 @@ let _fitToScreen = function () {
 	let canvasRatio = _targetWidth / _targetHeight;
 	let screenRatio = windowSize.width / windowSize.height;
 
-	if (screenRatio > canvasRatio){	//screenRatio is wider than target ratio.
-		_canvas.width = _targetHeight * screenRatio;
-		_canvas.height = _targetHeight;
+	if (screenRatio > canvasRatio) {	//screenRatio is wider than target ratio.
+		_contentWidth = _targetHeight * screenRatio;
+		_contentHeight = _targetHeight;
 	} else {
-		_canvas.width = _targetWidth;
-		_canvas.height = _targetWidth / screenRatio;
+		_contentWidth = _targetWidth;
+		_contentHeight = _targetWidth / screenRatio;
 	};
 
-	_canvas.style.width = windowSize.width;
-	_canvas.style.height = windowSize.height;
+	_screenWidth = windowSize.width;
+	_screenHeight = windowSize.height;
+
+	_canvas.width = _contentWidth;
+	_canvas.height = _contentHeight;
+	_canvas.style.width = _screenWidth;
+	_canvas.style.height = _screenHeight;
 
 	_resizeTaskId = null;
 
+	console.log('resize', {
+		width: _contentWidth,
+		height: _contentHeight,
+		screenWidth: _screenWidth,
+		screenHeight: _screenHeight
+	});
+
 	Screen.emit('resize', {
-		width: _canvas.width,
-		height: _canvas.height
+		width: _contentWidth,
+		height: _contentHeight,
+		screenWidth: _screenWidth,
+		screenHeight: _screenHeight
 	});
 };
 
@@ -91,12 +111,16 @@ Object.defineProperties(Screen, {
 	canvas: {
 		get: () => _canvas
 	},
-	width: {
-		get: () => _canvas.width
-	},
-	height: {
-		get: () => _canvas.height
-	}
+
+	width: { get: () => _canvas.width },
+	height: { get: () => _canvas.height },
+
+	contentWidth: { get: () => _contentWidth },
+	contentHeight: { get: () => _contentHeight },
+
+	screenWidth: { get: () => _screenWidth },
+	screenHeight: { get: () => _screenHeight },
+
 });
 
 export default Screen;

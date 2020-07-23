@@ -9,7 +9,14 @@ let Rectangle = function (x, y, width, height) {
 
 //TODO functionality ;)
 
-Rectangle.prototype.set = function (other) {
+Rectangle.prototype.set = function (x, y, width, height) {
+	this.x = x || 0;
+	this.y = y || 0;
+	this.width = width || 0;
+	this.height = height || 0;
+};
+
+Rectangle.prototype.copy = function (other) {
 	this.x = other.x;
 	this.y = other.y;
 	this.width = other.width;
@@ -47,7 +54,7 @@ Rectangle.prototype.contains = function (point) {
 	if (point.x > this.x + this.width) return false;
 	if (point.y < this.y) return false;
 	if (point.y > this.y + this.height) return false;
-	
+
 	return true;
 };
 

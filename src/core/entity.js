@@ -216,7 +216,7 @@ let Entity = function (settings) {
             get : () => _transform.rotation,
             set : v => _transform.rotation = v
         }
-    })
+    });
 
     Dispatcher.make(self);
 

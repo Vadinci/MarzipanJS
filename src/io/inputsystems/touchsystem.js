@@ -7,13 +7,14 @@
 import Engine from '../../core/engine';
 import Dispatcher from '../../core/dispatcher';
 import Vector2 from '../../math/vector2';
+import Marzipan from '../../marzipan';
 
 const MOUSE_ID = 'mouse';	//unique 'touch' id for the mouse
 const MOUSE_DOWN = 1;
 const MOUSE_UP = 0;
 
 let Touch = function (id, x, y) {
-	this.position = new Vector2(x,y);
+	this.position = new Vector2(x, y);
 	this.start = this.position.clone();
 	this.id = id;
 
@@ -26,6 +27,8 @@ let TouchSystem = function () {
 	let _mouseState = MOUSE_UP;
 	let _mousePos = { x: 0, y: 0 };
 
+	let _canvasScale = { x: 1, y: 1 };
+
 	let init = function (canvas) {
 		Engine.on('postUpdate', _flush);
 
@@ -36,6 +39,9 @@ let TouchSystem = function () {
 		canvas.addEventListener('mousedown', _onMouseDown);
 		canvas.addEventListener('mousemove', _onMouseMove);
 		canvas.addEventListener('mouseup', _onMouseUp);
+
+		Marzipan.screen.on('resize', _updateCanvasSize);
+		_updateCanvasSize();
 	};
 
 	//every update, the input needs to be flushed, after any code execution that might want to use input data.
@@ -45,10 +51,14 @@ let TouchSystem = function () {
 
 	/** Core */
 	let _createTouch = function (id, x, y) {
+		
 		if (_touches[id]) {
 			console.warn("touch with given id already exists!");
 			return;
 		}
+
+		x /= _canvasScale.x;
+		y /= _canvasScale.y;
 
 		let touch = new Touch(id, x, y);
 		_touches[id] = touch;
@@ -61,6 +71,9 @@ let TouchSystem = function () {
 			console.warn("touch with given id doesn't exist");
 			return;
 		}
+
+		x /= _canvasScale.x;
+		y /= _canvasScale.y;
 
 		let touch = _touches[id];
 		touch.position.x = x;
@@ -140,6 +153,13 @@ let TouchSystem = function () {
 
 		_removeTouch(MOUSE_ID);
 
+	};
+
+	let _updateCanvasSize = function(){
+		let screen = Marzipan.screen;
+
+		_canvasScale.x = screen.screenWidth / screen.contentWidth;
+		_canvasScale.y = screen.screenHeight / screen.contentHeight;
 	};
 
 	/** Systems */
