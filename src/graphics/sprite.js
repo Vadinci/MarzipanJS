@@ -89,6 +89,9 @@ let Sprite = function (settings) {
 	this._transform = new Transform();
 
 	this._origin = settings.origin || new Vector2(0, 0);
+	if (settings.originRelative) {
+		this._origin.set(settings.originRelative.x * this._picture.width, settings.originRelative.y * this._picture.height);
+	}
 	this._frame = new Rectangle(0, 0, settings.frameWidth || this._picture.width, settings.frameHeight || this._picture.height);
 
 	this._frameIdx = 0;
@@ -159,7 +162,7 @@ Sprite.prototype.update = function (data) {
 
 Sprite.prototype.draw = function (data) {
 	data.renderer.setTransform(this._transform.globalMatrix);
-	
+
 	data.renderer.drawPicturePart(this._picture,
 		this._frame.x, this._frame.y,
 		this._frame.width, this._frame.height,

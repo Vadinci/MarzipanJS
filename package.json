@@ -1,8 +1,8 @@
 {
-  "name": "marzipanjs",
+  "name": "marzipan",
   "version": "0.0.0",
   "description": "",
-  "main": "",
+  "main": "src/index.js",
   "private": true,
   "scripts": {
     "build-all": "node scripts/build all",
