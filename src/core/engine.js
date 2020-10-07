@@ -185,6 +185,9 @@ let module = {
     addScene: addScene,
     removeScene: removeScene,
 
+    update, 
+    draw,
+
     getByName: getByName,
     getByTags: getByTags,
 

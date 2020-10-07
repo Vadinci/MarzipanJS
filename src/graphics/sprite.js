@@ -88,18 +88,35 @@ let Sprite = function (settings) {
 
 	this._transform = new Transform();
 
-	this._origin = settings.origin || new Vector2(0, 0);
-	if (settings.originRelative) {
-		this._origin.set(settings.originRelative.x * this._picture.width, settings.originRelative.y * this._picture.height);
+	this._frame = new Rectangle(0, 0, this._picture.width, this._picture.height);
+	if (settings.frameWidth && settings.frameHeight) {
+		this._frame.set(0, 0, settings.frameWidth, settings.frameHeight);
+	} else if (settings.frameCountX && settings.frameCountY) {
+		this._frame.set(0, 0, Math.floor(this._picture.width / settings.frameCountX), Math.floor(this._picture.height / settings.frameCountY));
 	}
-	this._frame = new Rectangle(0, 0, settings.frameWidth || this._picture.width, settings.frameHeight || this._picture.height);
 
 	this._frameIdx = 0;
 	this._frameCountX = Math.floor(this._picture.width / this._frame.width);
 	this._frameCountY = Math.floor(this._picture.height / this._frame.height);
 
+	this._origin = settings.origin || new Vector2(0, 0);
+	if (settings.originRelative) {
+		this._origin.set(settings.originRelative.x * this._frame.width, settings.originRelative.y * this._frame.height);
+	}
+
 	this._currentAnimation = undefined;
 	this._animations = {};
+
+	for (let key in settings.animations) {
+		let animData = settings.animations[key];
+		this.addAnimation(key, new Animation(animData));
+
+		if (!this._currentAnimation) {
+			this._currentAnimation = this._animations[key];
+			this._currentAnimation.start();
+		}
+	}
+
 };
 
 
@@ -123,6 +140,7 @@ Sprite.prototype.play = function (name, onComplete) {
 		console.warn('animation with name ' + name + ' does not exist!');
 		return;
 	}
+	//TODO clear events of old animation
 	if (onComplete) animation.once('complete', onComplete);
 	this._currentAnimation = animation;
 	animation.start();

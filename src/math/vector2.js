@@ -85,6 +85,10 @@ Vector2.prototype.dot = function (other) {
 	return this.x * other.x + this.y * other.y;
 };
 
+Vector2.prototype.cross = function (other) {
+	return this.x * other.y - this.y * other.x;
+};
+
 Vector2.prototype.sqrMagnitude = function () {
 	return this.dot(this);
 };
@@ -101,39 +105,51 @@ Vector2.prototype.clone = function () {
 	return new Vector2(this.x, this.y);
 };
 
+Vector2.prototype.toString = function () {
+	return `(${this.x},${this.y})`;
+};
+
 //#region Resulting
 //these functions create a new vector (or scalar where applicable) based on the input, leaving the old vector intact
-Vector2.add = function(a, b){
+Vector2.add = function (a, b) {
 	return new Vector2(a.x + b.x, a.y + b.y);
 };
 
-Vector2.subtract = function(a, b){
+Vector2.subtract = function (a, b) {
 	return new Vector2(a.x - b.x, a.y - b.y);
 };
 Vector2.sub = Vector2.subtract;
 
-Vector2.multiply = function(a, b){
+Vector2.multiply = function (a, b) {
 	return new Vector2(a.x * b.x, a.y * b.y);
 };
 
-Vector2.multiplyScalar = function(a, v){
+Vector2.multiplyScalar = function (a, v) {
 	return new Vector2(a.x * v, a.y * v);
 };
 
-Vector2.divide = function(a, b){
+Vector2.divide = function (a, b) {
 	return new Vector2(a.x / b.x, a.y / b.y);
 };
 
-Vector2.divideScalar = function(a, v){
+Vector2.divideScalar = function (a, v) {
 	return new Vector2(a.x / v, a.y / v);
 };
 
-Vector2.normalize = function(a){
+Vector2.normalize = function (a) {
 	return a.clone().normalize();
 };
 
-Vector2.copy = function(other){
+Vector2.copy = function (other) {
 	return new Vector2(other.x, other.y);
+};
+
+Vector2.dot = function (a, b) {
+	return a.x * b.x + a.y * b.y;
+};
+
+Vector2.cross = function (a, b) {
+	return a.x * b.y - a.y * b.x;
 };
 //#endregion
 
