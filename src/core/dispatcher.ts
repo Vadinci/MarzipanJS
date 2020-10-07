@@ -1,6 +1,7 @@
 type Listener = {
     callback: Callback,
-    context: any | null
+    context: any | null,
+    __active : boolean
 };
 
 type Callback = (...args: any[]) => void;
@@ -19,7 +20,7 @@ class Dispatcher {
         if (idx === -1) return;
 
         for (let ii = this._listeners[key].length - 1; ii >= 0; ii--) {
-            if (this._listeners[key][ii] === undefined) {
+            if (this._listeners[key][ii].__active === false) {
                 this._listeners[key].splice(ii, 1);
             }
         }
@@ -36,7 +37,8 @@ class Dispatcher {
 
         let listener: Listener = {
             callback: cb,
-            context: context || null
+            context: context || null,
+            __active : true
         };
 
         this._listeners[key].push(listener);
@@ -60,7 +62,7 @@ class Dispatcher {
 
         for (let ii = list.length - 1; ii >= 0; ii--) {
             if (list[ii] && list[ii].callback === cb && list[ii].context === context) {
-                list[ii] = undefined;
+                list[ii].__active = false;
             }
         }
 
@@ -77,17 +79,9 @@ class Dispatcher {
 
         let doCancel;
         for (let ii = 0; ii < list.length; ii++) {
-            if (list[ii] === undefined) continue;
+            if (list[ii].__active === false) continue;
             doCancel = list[ii].callback.call(list[ii].context, data);
             if (doCancel && !preventCancel) break;
-        }
-    };
-
-    static make(target: any): void {
-        target.__dispatcher = new Dispatcher();
-        for (let key in target.__dispatcher) {
-            if (!target.__dispatcher.hasOwnProperty(key)) continue;
-            target[key] = target.__dispatcher[key];
         }
     };
 };

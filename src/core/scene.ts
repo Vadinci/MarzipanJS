@@ -123,7 +123,7 @@ class Scene extends Dispatcher {
 		for (let ii = 0; ii < this._removeList.length; ii++) {
 			gameData.entity = this._removeList[ii];
 			this._removeList[ii].die(gameData);
-			this._removeList[ii].scene = undefined;
+			this._removeList[ii].scene = null;
 
 			this._updateOrder.splice(this._updateOrder.indexOf(this._removeList[ii]), 1);
 			this._drawOrder.splice(this._drawOrder.indexOf(this._removeList[ii]), 1);
@@ -158,9 +158,7 @@ class Scene extends Dispatcher {
 		return result;
 	};
 
-	public getByTags(tags: string | string[]): Entity[] {
-		tags = [].concat(tags); //force to array;
-
+	public getByTags(tags: string[]): Entity[] {
 		let result: Entity[] = [];
 		for (let ii = 0; ii < this._entities.length; ii++) {
 			if (this._entities[ii].hasTags(tags)) result.push(this._entities[ii]);

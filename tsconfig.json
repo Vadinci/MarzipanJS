@@ -2,7 +2,8 @@
     "compilerOptions": {
         "outDir": "./dist",
         "allowJs": false,
-        "target": "es6"
+        "target": "es6",
+        "strictNullChecks": true
     },
         "include": [
         "./src/**/*"

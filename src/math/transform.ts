@@ -72,10 +72,10 @@ class Transform {
         var idx = this._children.indexOf(other);
         if (idx === -1) return;
         this._children.splice(idx, 1);
-        other.setParent(undefined);
+        other.setParent(null);
     };
 
-    public setParent(other: Transform): void {
+    public setParent(other: Transform  |null): void {
         if (this._parent === other) return;
         if (this._parent) {
             this._parent.removeChild(this);

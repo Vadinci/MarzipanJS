@@ -1,65 +1,66 @@
+//TODO needs more functionality
+
 import Vector2 from "./vector2";
 
-let Rectangle = function (x, y, width, height) {
-	this.x = x || 0;
-	this.y = y || 0;
-	this.width = width || 0;
-	this.height = height || 0;
-};
+class Rectangle {
+	public x: number;
+	public y: number;
+	public width: number;
+	public height: number;
 
-//TODO functionality ;)
+	constructor(x = 0, y = 0, width = 1, height = 1) {
+		this.set(x, y, width, height);
+	};
 
-Rectangle.prototype.set = function (x, y, width, height) {
-	this.x = x || 0;
-	this.y = y || 0;
-	this.width = width || 0;
-	this.height = height || 0;
-};
+	public set(x: number, y: number, width: number, height: number) {
+		this.x = x;
+		this.y = y;
+		this.width = width;
+		this.height = height;
+	};
 
-Rectangle.prototype.copy = function (other) {
-	this.x = other.x;
-	this.y = other.y;
-	this.width = other.width;
-	this.height = other.height;
-};
+	public copy(other: Rectangle) {
+		this.set(other.x, other.y, other.width, other.height);
+	};
 
-Rectangle.prototype.getCenter = function (point) {
-	let center = new Vector2();
-	center.x = this.x + this.width / 2;
-	center.y = this.y + this.height / 2;
+	public getCenter(): Vector2 {
+		let center = new Vector2();
+		center.x = this.x + this.width / 2;
+		center.y = this.y + this.height / 2;
 
-	return center;
-};
+		return center;
+	};
 
-Rectangle.prototype.enclose = function (point) {
-	if (point.x < this.x) {
-		this.width += this.x - point.x;
-		this.x = point.x;
-	} else if (point.x > this.x + this.width) {
-		this.width += point.x - (this.x + this.width);
-	}
+	public enclose(point: Vector2): Rectangle {
+		if (point.x < this.x) {
+			this.width += this.x - point.x;
+			this.x = point.x;
+		} else if (point.x > this.x + this.width) {
+			this.width += point.x - (this.x + this.width);
+		}
 
-	if (point.y < this.y) {
-		this.height += this.y - point.y;
-		this.y = point.y;
-	} else if (point.y > this.y + this.height) {
-		this.height += point.y - (this.y + this.height);
-	}
+		if (point.y < this.y) {
+			this.height += this.y - point.y;
+			this.y = point.y;
+		} else if (point.y > this.y + this.height) {
+			this.height += point.y - (this.y + this.height);
+		}
 
-	return this;
-};
+		return this;
+	};
 
-Rectangle.prototype.contains = function (point) {
-	if (point.x < this.x) return false;
-	if (point.x > this.x + this.width) return false;
-	if (point.y < this.y) return false;
-	if (point.y > this.y + this.height) return false;
+	public contains(point: Vector2): boolean {
+		if (point.x < this.x) return false;
+		if (point.x > this.x + this.width) return false;
+		if (point.y < this.y) return false;
+		if (point.y > this.y + this.height) return false;
 
-	return true;
-};
+		return true;
+	};
 
-Rectangle.prototype.toString = function () {
-	return `({this.x}, {this.y}), ({this.x+this.width}, {this.y + this.height})`;
+	public toString(): string {
+		return `({this.x}, {this.y}), ({this.x+this.width}, {this.y + this.height})`;
+	};
 };
 
 export default Rectangle;

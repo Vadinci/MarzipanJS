@@ -15,7 +15,7 @@ class Entity extends Dispatcher {
     private _components: Component[] = [];
     private _tags: string[] = [];
 
-    private _scene: Scene = null;
+    private _scene: Scene | null = null;
     private _transform: Transform = new Transform();
 
     private _tick: number = 0;
@@ -97,11 +97,11 @@ class Entity extends Dispatcher {
         }
     };
 
-    public addComponent(component: Component): Component {
+    public addComponent(component: Component): Component | null {
         let idx = this._components.indexOf(component);
         if (idx !== -1) {
             console.warn('component ' + component.name + ' already added to entity ' + self.name);
-            return;
+            return null;
         }
         this._components.push(component);
         idx = this._components.length - 1;
@@ -113,12 +113,13 @@ class Entity extends Dispatcher {
         return component;
     };
 
-    public getComponent(name: string): Component {
+    public getComponent(name: string): Component | null {
         for (let ii = 0; ii < this._components.length; ii++) {
             if (this._components[ii].name === name) {
                 return this._components[ii];
             }
         }
+        return null;
     };
 
     public getAllComponents(): Component[] {
@@ -127,7 +128,9 @@ class Entity extends Dispatcher {
 
     public removeComponent(component: Component | string): void {
         if (typeof component === 'string') {
-            component = this.getComponent(component);
+            let c = this.getComponent(component);
+            if (c === null) return;
+            component = c;
         }
         if (!component) return;
 
@@ -175,9 +178,9 @@ class Entity extends Dispatcher {
         tags.forEach(t => this.removeTag(t));
     };
 
-    public get scene() { return this._scene; };
-    public set scene(v: Scene) {
-        if (this._scene && v !== undefined) throw new Error("can't set Scene twice. Entity needs to be removed first");
+    public get scene():Scene | null { return this._scene; };
+    public set scene(v: Scene | null) {
+        if (this._scene && v !== null) throw new Error("can't set Scene twice. Entity needs to be removed first");
         this._scene = v;
     }
 
