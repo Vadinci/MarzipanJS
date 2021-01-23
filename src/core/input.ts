@@ -1,27 +1,24 @@
-import ENSURE from '../utils/ensure';
-import Engine from './engine';
-import Screen from '../graphics/screen';
+import Screen from "../graphics/screen";
+import Engine from "./engine";
+import Keyboard from "./input/keyboard";
+import Touch from "./input/touch";
 
-let init = function (settings) {
-	ENSURE(settings);
-};
+class Input {
+	private _keyboard: Keyboard;
+	public get keyboard() { return this._keyboard; };
 
-let addSystem = function (system) {
-	if (Input[system.key]) {
-		console.warn('already initialized instance of input system: ' + system.key);
-		return;
-	}
+	private _touch: Touch;
+	public get Touch() { return this._touch; };
 
-	system.init(Screen.canvas);
+	constructor(){
+		this._keyboard = new Keyboard();
+		this._touch = new Touch();
+	};
 
-	Input[system.key] = system;
-};
-
-
-let Input = {
-	init,
-
-	addSystem
+	init(engine:Engine, screen:Screen){
+		this._keyboard.init(engine);
+		this._touch.init(engine, screen);
+	};
 };
 
 export default Input;

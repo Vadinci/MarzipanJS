@@ -1,44 +1,44 @@
-
 const M = 0xffffffff; //modulus - 2^32 or 4 bytes
 const A = 1664525; //multiplier
 const C = 1013904223; //increment
 
-let Random = function (_seed) {
-	let seed;
-	let z;
+class Random {
+	private _seed: number;
+	private _z: number;
 
-	let setSeed = function (newSeed) {
-		seed = newSeed || Math.round(Math.random() * M); //get a random seed using Math.random();
-		seed = seed % M;
-		z = seed;
+	constructor(seed?: number) {
+		if (seed === void (0)) {
+			seed = Math.round(Math.random() * M);
+		}
+		this.seed = seed;
 	};
 
-	let getSeed = function () {
-		return seed;
+	set seed(newSeed: number) {
+		this._seed = newSeed % M;
+		this._z = this._seed;
+	};
+	get seed(): number { return this._seed; };
+
+	public next(): number {
+		this._z = (A * this._z + C) % M;
+		return this._z;
 	};
 
-	let getNext = function () {
-		z = (A * z + C) % M;
-		return z;
+	public random(): number {
+		return this.next() / M;
 	};
 
-	let getRandom = function () {
-		return getNext() / M;
-	};
-
-	let getFloat = function (a, b) {
+	public float(a?: number, b?: number): number {
+		if (!a) a = 1;
 		if (!b) {
 			b = a;
 			a = 0;
 		}
-		if (!b) {
-			b = 1;
-		}
 
-		return a + getRandom() * (b - a);
+		return a + this.random() * (b - a);
 	};
 
-	let getInt = function (a, b) {
+	public int(a?: number, b?: number): number {
 		a = a || 0;
 		b = b || 0;
 		if (b < a) {
@@ -46,80 +46,45 @@ let Random = function (_seed) {
 			a = b;
 			b = t;
 		}
-		return Math.floor(getFloat(a, b + 1));
+		return Math.floor(this.float(a, b + 1));
 	};
 
-	let getBool = function (chance) {
-		chance = chance === undefined ? 0.5 : chance;
-		return (getRandom() < chance);
+	public bool(chance: number): boolean {
+		chance = (chance === undefined ? 0.5 : chance);
+		return (this.random() < chance);
 	};
 
-	let pick = function (arr) {
-		let idx = Math.floor(getRandom() * arr.length);
+	public pick(arr: Array<any>): any {
+		let idx = Math.floor(this.random() * arr.length);
 		return arr[idx];
 	};
 
 	//https://en.wikipedia.org/wiki/Marsaglia_polar_method
-	let __ndSpare;
-	let normalDistribution = function (mean, stdDev) {
-		let u;
-		let v;
-		let s;
-		if (__ndSpare !== undefined) {
-			s = __ndSpare;
-			__ndSpare = undefined;
+	private __ndSpare: number | null = null;
+	public normalDistribution(mean: number, stdDev: number): number {
+		let u: number;
+		let v: number;
+		let s: number;
+		if (this.__ndSpare !== null) {
+			s = this.__ndSpare;
+			this.__ndSpare = null;
 			return mean + s * stdDev;
 		}
 
 		do {
-			u = getRandom() * 2 - 1;
-			v = getRandom() * 2 - 1;
+			u = this.random() * 2 - 1;
+			v = this.random() * 2 - 1;
 			s = u * u + v * v
 		} while (s > 1 || s === 0);
 
 		let mul = Math.sqrt(-2 * Math.log(s) / s);
-		__ndSpare = u * mul;
+		this.__ndSpare = u * mul;
 		return mean + v * mul * stdDev;
 	};
 
-	setSeed(_seed);
-
-	let mod = {
-		setSeed: setSeed,
-		getSeed: getSeed,
-
-		next: getNext,
-		getNext: getNext,
-
-		getRandom: getRandom,
-		random: getRandom,
-
-		getFloat: getFloat,
-		float: getFloat,
-		range: getFloat,
-
-		getInt: getInt,
-		int: getInt,
-
-		getBool: getBool,
-		boolean: getBool,
-		bool: getBool,
-
-		angle: function () {
-			return getFloat(0, Math.PI * 2);
-		},
-
-		pick: pick,
-
-		normalDistribution: normalDistribution
+	public angle(): number {
+		return this.float(0, Math.PI * 2);
 	};
-
-	Object.defineProperty(mod, "seed", {
-		get: getSeed,
-		set: setSeed
-	});
-
-	return mod;
 };
 
 

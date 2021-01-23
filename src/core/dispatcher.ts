@@ -1,7 +1,7 @@
 type Listener = {
     callback: Callback,
     context: any | null,
-    __active : boolean
+    __active: boolean
 };
 
 type Callback = (...args: any[]) => void;
@@ -28,7 +28,7 @@ class Dispatcher {
         this._cleanKeys.splice(idx, 1);
     };
 
-    public on(key: string, cb: Callback, context: any | null): void {
+    public on(key: string, cb: Callback, context?: any): void {
         this._listeners[key] = this._listeners[key] || [];
 
         if (this._newKeys.indexOf(key) === -1) {
@@ -38,13 +38,13 @@ class Dispatcher {
         let listener: Listener = {
             callback: cb,
             context: context || null,
-            __active : true
+            __active: true
         };
 
         this._listeners[key].push(listener);
     };
 
-    public once(key: string, cb: Callback, context: any | null): void {
+    public once(key: string, cb: Callback, context?: any): void {
         //deregisters itself the first time it's called
         let wrapper = function () {
             this.off(key, wrapper);

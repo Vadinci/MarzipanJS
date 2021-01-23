@@ -1,5 +1,5 @@
 import Dispatcher from './dispatcher';
-import Marzipan from '../marzipan';
+import Marzipan from '../marzipan-old';
 import Matrix3 from '../math/matrix3';
 import Scene from './scene';
 
@@ -24,8 +24,8 @@ class Engine extends Dispatcher {
     public frame: number = 0;
 
     public fps: number = 60;
-    public spf: number = 1 / 60;
-    public mspf: number = 1000 / 60;
+    public spf: number = 1 / this.fps;
+    public mspf: number = 1000 / this.fps;
 
     private _isRunning: boolean = false;
 

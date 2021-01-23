@@ -1,14 +1,21 @@
 import ENSURE from '../utils/ensure';
 
-let AssetLoader = function (settings) {
-    ENSURE(settings);
+type AssetLoaderSettings = {
+    name: string;
+    filetypes: string[];
+    load: (path: string) => Promise<any>;   //TODO can this any be more precise?
+};
 
-    let loader = {
-        name: ENSURE(settings.name),
-        filetypes : ENSURE(settings.filetypes),
-        load : ENSURE(settings.load)
+class AssetLoader {
+    public name: string;
+    public filetypes: string[];
+    public load: (path: string) => Promise<any>;
+
+    constructor(settings:AssetLoaderSettings){
+        this.name = ENSURE(settings.name);
+        this.filetypes = ENSURE(settings.filetypes);
+        this.load = ENSURE(settings.load);
     };
-    return loader;
 };
 
 export default AssetLoader;

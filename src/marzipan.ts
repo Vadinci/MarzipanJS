@@ -1,83 +1,79 @@
-import Engine from './core/engine';
-import Assets from './core/assets';
-import ENSURE from './utils/ensure';
+import Assets from "./core/assets";
+import Dispatcher from "./core/dispatcher";
+import Engine from "./core/engine";
+import Input from "./core/input";
+import { Renderer } from "./graphics/renderer";
+import Screen from "./graphics/screen";
+import WebRenderer from "./graphics/web/webrenderer";
 
-import Input from './core/input';
-import Screen from './graphics/screen';
-import WebRenderer from './graphics/web/webrenderer';
-import GLRenderer from './graphics/gl/glrenderer';
+import AudioLoader from "./io/loaders/audioloader";
+import JsonLoader from "./io/loaders/jsonloader";
+import PictureLoader from "./io/loaders/pictureloader";
+import PlainLoader from "./io/loaders/plainloader";
+import YamlLoader from "./io/loaders/yamlloader";
+import Random from "./math/random";
 
-import Random from './math/random';
-import Dispatcher from './core/dispatcher';
+type MarzipanSettings = any;
 
+class Marzipan {
+	public static instance: Marzipan | null = null;
 
-//default asset loaders
-import YamlLoader from './io/loaders/yamlloader';
-import PlainLoader from './io/loaders/plainloader';
-import JsonLoader from './io/loaders/jsonloader';
-import PictureLoader from './io/loaders/pictureloader';
-import AudioLoader from './io/loaders/audioloader';
+	private _engine: Engine;
+	static get engine(): Engine | undefined { return Marzipan.instance?._engine; };
 
-//default controllers
-import KeyboardSystem from './io/inputsystems/keyboardsystem';
-import TouchSystem from './io/inputsystems/touchsystem';
+	private _assets: Assets;
+	static get assets(): Assets | undefined { return Marzipan.instance?._assets; };
 
+	private _screen: Screen;
+	static get screen(): Screen | undefined { return Marzipan.instance?._screen; };
 
-let renderer;
+	private _renderer: Renderer;
+	static get renderer(): Renderer | undefined { return Marzipan.instance?._renderer; };
 
-let random = new Random();
-let eventDispatcher = new Dispatcher();
+	private _input: Input;
+	static get input(): Input | undefined { return Marzipan.instance?._input; };
 
-let init = function (settings) {
-    ENSURE(settings);
-    //init asssets and loaders
-    Assets.init(settings.assets || {});
-    Assets.addLoader(new PlainLoader());
-    Assets.addLoader(new YamlLoader());
-    Assets.addLoader(new JsonLoader());
-    Assets.addLoader(new PictureLoader());
-    Assets.addLoader(new AudioLoader());
+	private _events: Dispatcher;
+	static get events(): Dispatcher | undefined { return Marzipan.instance?._events; };
 
-    //init graphics (renderer)
-    Screen.init(settings.screen || {});
-    renderer = new WebRenderer({
-        screen: Screen
-    });
+	private _random: Random;
+	static get random(): Random | undefined { return Marzipan.instance?._random; };
 
-    //init controllers
-    Input.init(settings.input || {});
-    Input.addSystem(new KeyboardSystem());
-    Input.addSystem(new TouchSystem());
+	constructor(settings: MarzipanSettings) {
+		if (Marzipan.instance !== null) {
+			throw "A Marzipan instance already exists";
+		}
 
-    Engine.init(settings.engine || {});
+		Marzipan.instance = this;
+
+		this._events = new Dispatcher;
+
+		this._assets = new Assets();
+		this._assets.addLoader(PlainLoader);
+		this._assets.addLoader(YamlLoader);
+		this._assets.addLoader(JsonLoader);
+		this._assets.addLoader(PictureLoader);
+		this._assets.addLoader(AudioLoader);
+
+		this._screen = new Screen();
+		this._screen.init(settings.screenSettings);
+
+		this._renderer = new WebRenderer({
+			screen: this._screen
+		});
+
+		this._engine = new Engine();
+		this._engine.init();
+
+		this._input = new Input();
+		this._input.init(this._engine, this._screen);
+
+		this._random = new Random();
+	};
+
+	static start(settings: MarzipanSettings): void {
+		new Marzipan(settings);
+	};
 };
-
-let Marzipan = {
-    init
-};
-
-Object.defineProperties(Marzipan, {
-    engine: {
-        get: () => Engine
-    },
-    assets: {
-        get: () => Assets
-    },
-    renderer: {
-        get: () => renderer
-    },
-    input: {
-        get: () => Input
-    },
-    screen: {
-        get: () => Screen
-    },
-    random: {
-        get: () => random
-    },
-    events: {
-        get: () => eventDispatcher
-    }
-});
 
 export default Marzipan;
