@@ -1,12 +1,12 @@
 //TODO redo transform to just be a 3x2 matrix instead of maintaining a 3x3 matrix
 
-import Vector2 from './vector2';
-import Matrix3 from './matrix3';
+import { Vector2 } from './vector2';
+import { Matrix3 } from './matrix3';
 
 //TODO some way to check if changes have been made in position, scale and rotation, and only recalculate the matrices 
 //if necessary when they are asked for
 
-class Transform {
+export class Transform {
     private _position: Vector2;
     private _scale: Vector2;
     private _rotation: number;
@@ -75,7 +75,7 @@ class Transform {
         other.setParent(null);
     };
 
-    public setParent(other: Transform  |null): void {
+    public setParent(other: Transform | null): void {
         if (this._parent === other) return;
         if (this._parent) {
             this._parent.removeChild(this);
@@ -137,8 +137,6 @@ class Transform {
     };
 
     public get parent() { return this._parent; };
-    
+
     public get name() { return 'transform'; };
 };
-
-export default Transform;

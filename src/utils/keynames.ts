@@ -1,4 +1,4 @@
-const KeyNames: { [key: number]: string } = {
+export const KeyNames: { [key: number]: string } = {
     8: "BACKSPACE",
     9: "TAB",
     13: "ENTER",
@@ -99,5 +99,3 @@ const KeyNames: { [key: number]: string } = {
     221: "CLOSE_BRACKET",
     222: "SINGLE_QUOTE"
 };
-
-export default KeyNames;

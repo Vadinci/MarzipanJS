@@ -1,8 +1,8 @@
 //TODO needs more functionality
 
-import Vector2 from "./vector2";
+import { Vector2 } from "./vector2";
 
-class Rectangle {
+export class Rectangle {
 	public x: number;
 	public y: number;
 	public width: number;
@@ -62,5 +62,3 @@ class Rectangle {
 		return `({this.x}, {this.y}), ({this.x+this.width}, {this.y + this.height})`;
 	};
 };
-
-export default Rectangle;

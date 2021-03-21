@@ -1,14 +1,13 @@
 //TODO add pause and resume;
 //TODO documentation
 
-import Dispatcher from "../core/dispatcher";
-import Vector2 from "../math/vector2";
-import ENSURE from "../utils/ensure";
-import Transform from "../math/transform";
-import Rectangle from "../math/rectangle";
-import Marzipan from "../marzipan";
-import Component from "../core/component";
-import { Picture } from "./picture";
+import { Dispatcher } from "../core/dispatcher";
+import { Vector2 } from "../math/vector2";
+import { Transform } from "../math/transform";
+import { Rectangle } from "../math/rectangle";
+import { Marzipan } from "../marzipan";
+import { Component } from "../core/component";
+import { IPicture } from "./picture";
 import { Renderer } from "./renderer";
 
 export class Animation extends Dispatcher {
@@ -25,7 +24,9 @@ export class Animation extends Dispatcher {
 		super();
 
 		this._loop = settings.loop || false;
-		this._frames = settings.frames || false;
+		this._frames = settings.frames || [0];
+
+		this._frameDurations = [];
 
 		for (let ii = 0; ii < this._frames.length; ii++) {
 			let duration = 1 / 24;	//a default speed of 24 frames per second //TODO move to const
@@ -78,7 +79,7 @@ export class Animation extends Dispatcher {
 };
 
 export class Sprite extends Component {
-	private _picture: Picture;
+	private _picture: IPicture;
 	private _transform: Transform;
 	private _frame: Rectangle;
 
@@ -96,7 +97,7 @@ export class Sprite extends Component {
 	constructor(settings: any) {
 		super();
 
-		this._picture = settings.picture || Marzipan.assets?.get<Picture>('picture', settings.pictureName);
+		this._picture = settings.picture || Marzipan.assets.get<IPicture>('picture', settings.pictureName);
 
 		this._transform = new Transform();
 

@@ -4,21 +4,21 @@
  *  - no mouse buttons besides the left mouse
  */
 
-import Engine from '../../core/engine';
-import Dispatcher from '../../core/dispatcher';
-import Vector2 from '../../math/vector2';
-import Screen from '../../graphics/screen';
+import { Engine } from '../../core/engine';
+import { Dispatcher } from '../../core/dispatcher';
+import { Vector2 } from '../../math/vector2';
+import { Screen } from '../../graphics/screen';
 
 const MOUSE_ID = -1;	//unique 'touch' id for the mouse
 
-enum MouseState {
+export enum MouseState {
 	UP,
 	DOWN
 };
 
-class Pointer {
-	public position: Vector2;
-	public start: Vector2;
+export class Pointer {
+	public position: Vector2 = new Vector2();
+	public start: Vector2 = new Vector2();
 	public id: number;
 	public startTime: number;
 
@@ -31,7 +31,7 @@ class Pointer {
 };
 
 
-class Touch extends Dispatcher {
+export class Touch extends Dispatcher {
 	private _pointers = {};
 
 	private _mouseState: MouseState = MouseState.UP;
@@ -42,7 +42,7 @@ class Touch extends Dispatcher {
 	//TODO screen
 	public init(engine: Engine, screen: Screen): void {
 		const canvas = screen.canvas;
-		
+
 		engine.on('postUpdate', this._flush.bind(this));
 
 		canvas.addEventListener('touchstart', this._onTouchStart.bind(this));
@@ -173,5 +173,3 @@ class Touch extends Dispatcher {
 		this._canvasScale.y = screen.screenHeight / screen.contentHeight;
 	};
 };
-
-export default Touch;

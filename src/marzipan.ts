@@ -1,46 +1,50 @@
-import Assets from "./core/assets";
-import Dispatcher from "./core/dispatcher";
-import Engine from "./core/engine";
-import Input from "./core/input";
+import { Assets } from "./core/assets";
+import { Dispatcher } from "./core/dispatcher";
+import { Engine } from "./core/engine";
+import { Input } from "./core/input";
+import { PlayerData } from "./core/playerdata";
 import { Renderer } from "./graphics/renderer";
-import Screen from "./graphics/screen";
-import WebRenderer from "./graphics/web/webrenderer";
+import { Screen } from "./graphics/screen";
+import { WebRenderer } from "./graphics/web/webrenderer";
 
-import AudioLoader from "./io/loaders/audioloader";
-import JsonLoader from "./io/loaders/jsonloader";
-import PictureLoader from "./io/loaders/pictureloader";
-import PlainLoader from "./io/loaders/plainloader";
-import YamlLoader from "./io/loaders/yamlloader";
-import Random from "./math/random";
+import { AudioLoader } from "./io/loaders/audioloader";
+import { JsonLoader } from "./io/loaders/jsonloader";
+import { PictureLoader } from "./io/loaders/pictureloader";
+import { PlainLoader } from "./io/loaders/plainloader";
+import { YamlLoader } from "./io/loaders/yamlloader";
+import { Random } from "./math/random";
 
 type MarzipanSettings = any;
 
-class Marzipan {
-	public static instance: Marzipan | null = null;
+export class Marzipan {
+	public static instance: Marzipan;
 
 	private _engine: Engine;
-	static get engine(): Engine | undefined { return Marzipan.instance?._engine; };
+	static get engine(): Engine { return Marzipan.instance._engine; };
 
 	private _assets: Assets;
-	static get assets(): Assets | undefined { return Marzipan.instance?._assets; };
+	static get assets(): Assets { return Marzipan.instance._assets; };
 
 	private _screen: Screen;
-	static get screen(): Screen | undefined { return Marzipan.instance?._screen; };
+	static get screen(): Screen { return Marzipan.instance._screen; };
 
 	private _renderer: Renderer;
-	static get renderer(): Renderer | undefined { return Marzipan.instance?._renderer; };
+	static get renderer(): Renderer { return Marzipan.instance._renderer; };
 
 	private _input: Input;
-	static get input(): Input | undefined { return Marzipan.instance?._input; };
+	static get input(): Input { return Marzipan.instance._input; };
+
+	private _playerData: PlayerData;
+	static get playerData(): PlayerData { return Marzipan.instance._playerData; };
 
 	private _events: Dispatcher;
-	static get events(): Dispatcher | undefined { return Marzipan.instance?._events; };
+	static get events(): Dispatcher { return Marzipan.instance._events; };
 
 	private _random: Random;
-	static get random(): Random | undefined { return Marzipan.instance?._random; };
+	static get random(): Random { return Marzipan.instance._random; };
 
 	constructor(settings: MarzipanSettings) {
-		if (Marzipan.instance !== null) {
+		if (Marzipan.instance) {
 			throw "A Marzipan instance already exists";
 		}
 
@@ -49,14 +53,14 @@ class Marzipan {
 		this._events = new Dispatcher;
 
 		this._assets = new Assets();
-		this._assets.addLoader(PlainLoader);
-		this._assets.addLoader(YamlLoader);
-		this._assets.addLoader(JsonLoader);
-		this._assets.addLoader(PictureLoader);
-		this._assets.addLoader(AudioLoader);
+		this._assets.addLoader(new PlainLoader());
+		this._assets.addLoader(new YamlLoader());
+		this._assets.addLoader(new JsonLoader());
+		this._assets.addLoader(new PictureLoader());
+		this._assets.addLoader(new AudioLoader());
 
 		this._screen = new Screen();
-		this._screen.init(settings.screenSettings);
+		this._screen.init(settings.screen);
 
 		this._renderer = new WebRenderer({
 			screen: this._screen
@@ -69,11 +73,13 @@ class Marzipan {
 		this._input.init(this._engine, this._screen);
 
 		this._random = new Random();
+		
+		this._playerData = new PlayerData();
 	};
 
-	static start(settings: MarzipanSettings): void {
-		new Marzipan(settings);
+	static setup(settings: MarzipanSettings): void {
+		if (!Marzipan.instance){
+			new Marzipan(settings);
+		}
 	};
 };
-
-export default Marzipan;

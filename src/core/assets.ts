@@ -1,12 +1,12 @@
-import AssetLoader from "../io/assetloader";
+import { IAssetLoader } from "../io/assetloader";
 
-class Assets {
-    private _loaders: { [key: string]: AssetLoader } = {};
+export class Assets {
+    private _loaders: { [key: string]: IAssetLoader } = {};
     private _filetypes: { [key: string]: string } = {};
 
     private _assets: { [key: string]: any } = {};
 
-    public addLoader(loader: AssetLoader): void {
+    public addLoader(loader: IAssetLoader): void {
         this._loaders[loader.name] = loader;
         for (let ii = 0; ii < loader.filetypes.length; ii++) {
             let ft = loader.filetypes[ii];
@@ -44,19 +44,17 @@ class Assets {
     };
 
     //FIXME: I'm not to happy with having to provide a type here. Can't we auto generate getters for each loader maybe?
-    public get<T>(type: string, name: string): T | null{
+    public get<T>(type: string, name: string): T | null {
         let asset = this._assets[type][name];
         //TODO type checking
         return this._assets[type][name] as T;
     };
 
-    public get loaders(): AssetLoader[] {
-        let result: AssetLoader[] = [];
+    public get loaders(): IAssetLoader[] {
+        let result: IAssetLoader[] = [];
         for (let key in this._loaders) {
             result.push(this._loaders[key]);
         }
         return result;
     };
 };
-
-export default Assets;

@@ -1,26 +1,26 @@
-import Dispatcher from "./dispatcher";
-import Transform from "../math/transform";
-import Entity from "./entity";
+import { Dispatcher } from "./dispatcher";
+import { Transform } from "../math/transform";
+import { Entity } from "./entity";
 
-type SceneSettings = {
+export interface ISceneSettings {
 	name?: string;
 	layer?: number;
 };
 
-class Scene extends Dispatcher {
-	private _entities: Entity[];
-	private _updateOrder: Entity[];
-	private _drawOrder: Entity[];
+export class Scene extends Dispatcher {
+	private _entities: Entity[] = [];
+	private _updateOrder: Entity[] = [];
+	private _drawOrder: Entity[] = [];
 
-	private _addList: Entity[];
-	private _removeList: Entity[];
+	private _addList: Entity[] = [];
+	private _removeList: Entity[] = [];
 
 	private _name: string = 'scene';
 	private _layer: number = 0;
 
 	private _transform: Transform = new Transform();
 
-	constructor(settings: SceneSettings) {
+	constructor(settings: ISceneSettings) {
 		super();
 
 		if (settings.name !== void (0)) this._name = settings.name;
@@ -172,5 +172,3 @@ class Scene extends Dispatcher {
 
 	public get transform() { return this._transform; };
 };
-
-export default Scene;

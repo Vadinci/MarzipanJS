@@ -1,21 +1,21 @@
-import Engine from '../../core/engine';
-import KeyNames from '../../utils/keynames';
-import Dispatcher from '../../core/dispatcher';
+import { Engine } from '../../core/engine';
+import { KeyNames } from '../../utils/keynames';
+import { Dispatcher } from '../../core/dispatcher';
 
-type KeyState = {
+export type KeyState = {
 	pressed: boolean;
 	down: boolean;
 	released: boolean;
 };
 
-class Keyboard extends Dispatcher {
+export class Keyboard extends Dispatcher {
 	private _keyStates: KeyState[] = [];
 	private _dirtyKeys: number[] = [];
 	private _keyBindings: { [key: string]: number[] } = {};
 
 	public init(engine: Engine): void {
 		//init keystate array
-		(function () {
+		(() => {
 			let ii;
 			for (ii = 0; ii < 255; ++ii) {
 				this._keyStates.push({
@@ -154,5 +154,3 @@ class Keyboard extends Dispatcher {
 
 
 };
-
-export default Keyboard;

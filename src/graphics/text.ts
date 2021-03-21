@@ -5,8 +5,4 @@
 //TODO alignments (align & baseline)
 //TODO maxWidth and maxHeight
 
-let Text = function(){
-
-};
-
-export default Text;
+export class Text { };

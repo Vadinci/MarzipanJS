@@ -1,8 +1,7 @@
-class Component {
-	public name: string = 'component';
+export class Component {
+	public name: string = "component";
 
-	constructor(){};
-
+	constructor() { };
 	public added(data: any): void { };
 
 	public start(data: any): void { };
@@ -14,5 +13,3 @@ class Component {
 	public drawDebug(data: any): void { };
 	public postDraw(data: any): void { };
 };
-
-export default Component;

@@ -1,6 +1,6 @@
 //TODO read up on matrices and go over this file again :) 
 
-import Vector2 from "./vector2";
+import { Vector2 } from "./vector2";
 
 const C00 = 0;
 const C10 = 1;
@@ -14,7 +14,7 @@ const C02 = 6;
 const C12 = 7;
 const C22 = 8;
 
-class Matrix3 {
+export class Matrix3 {
     public mat: Float32Array = new Float32Array(9);
 
     constructor() {
@@ -128,7 +128,7 @@ class Matrix3 {
         return sum;
     };
 
-    public static inverse(mat:Matrix3):Matrix3 {
+    public static inverse(mat: Matrix3): Matrix3 {
         let det = Matrix3.determinant(mat);
         if (det === 0) {
             //matrix is not invertable
@@ -154,5 +154,3 @@ class Matrix3 {
     };
 
 };
-
-export default Matrix3;

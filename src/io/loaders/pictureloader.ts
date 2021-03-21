@@ -1,15 +1,15 @@
 //TODO add support for texture-packed sprites
 
+import { buildPicture } from "../../graphics/picture";
+import { IAssetLoader } from "../assetloader";
+
 //TODO add a cache?
 
-import AssetLoader from '../assetloader';
-import Picture from '../../graphics/picture';
+export class PictureLoader implements IAssetLoader {
+    name: string = "picture";
+    filetypes: string[] = ["png"];
 
-// let PictureLoader = function () {
-let PictureLoader = new AssetLoader({
-    name: 'picture',
-    filetypes: ['png'],
-    load: function (path) {
+    load(path: string): Promise<any> {
         return new Promise((resolve, reject) => {
             let img = new Image();
 
@@ -20,7 +20,7 @@ let PictureLoader = new AssetLoader({
 
             let onLoad = (evt: Event) => {
                 cleanListeners();
-                let picture = Picture(img, null);
+                let picture = buildPicture(img, null);
                 resolve(picture);
             };
 
@@ -35,7 +35,4 @@ let PictureLoader = new AssetLoader({
             img.src = path;
         });
     }
-});
-// };
-
-export default PictureLoader;
+}

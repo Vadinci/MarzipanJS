@@ -7,17 +7,17 @@
  * https://github.com/LuckyKat/Bento/blob/master/js/packedimage.js
  */
 
-import Rectangle from "../math/rectangle";
+import { Rectangle } from "../math/rectangle";
 
-export type Picture = {
-    x: number,
-    y: number,
-    width: number,
-    height: number,
-    image: HTMLImageElement
+export interface IPicture {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+    image: HTMLImageElement;
 };
 
-export function Picture(image: HTMLImageElement, area: Rectangle | null): Picture {
+export function buildPicture(image: HTMLImageElement, area: Rectangle | null): IPicture {
     if (!area) {
         //TODO make a rectangle module
         area = new Rectangle(0, 0, image.width, image.height);

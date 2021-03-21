@@ -1,16 +1,17 @@
-import Dispatcher from './dispatcher';
-import Marzipan from '../marzipan-old';
-import Matrix3 from '../math/matrix3';
-import Scene from './scene';
+import { Dispatcher } from './dispatcher';
+import { Marzipan } from '../marzipan';
+import { Matrix3 } from '../math/matrix3';
+import { Scene } from './scene';
 
 type GameData = {
     currentTime: number;
     runningTime: number;
+    deltaTime: number;
     frame: number;
     ticks: number;
 };
 
-class Engine extends Dispatcher {
+export class Engine extends Dispatcher {
     private _drawDebug = false;
 
     public startTime: number = 0;
@@ -137,6 +138,7 @@ class Engine extends Dispatcher {
         return {
             currentTime: this.currentTime,
             runningTime: this.runningTime,
+            deltaTime: 0,   //to be set 
             frame: this.frame,
             ticks: this.ticks
         };
@@ -196,5 +198,3 @@ class Engine extends Dispatcher {
         this._drawDebug = v;
     }
 };
-
-export default Engine;

@@ -1,16 +1,16 @@
-import Matrix3 from "../math/matrix3";
-import Vector2 from "../math/vector2";
-import { Picture } from "./picture";
-import Screen from "./screen";
+import { Matrix3 } from "../math/matrix3";
+import { Vector2 } from "../math/vector2";
+import { IPicture } from "./picture";
+import { Screen } from "./screen";
 
-export type RendererSettings = {
-	screen: Screen
+export interface IRendererSettings {
+	screen: Screen;
 };
 
 export class Renderer {
 	protected _screen: Screen;
 
-	constructor(settings: RendererSettings) {
+	constructor(settings: IRendererSettings) {
 		this._screen = settings.screen;
 	};
 
@@ -29,7 +29,7 @@ export class Renderer {
 	public drawCircle(pos: Vector2, radius: number, color: any, width: number): void { };
 	public drawPolygon(): void { };
 
-	public drawPicture(picture: Picture, x: number, y: number): void { };
-	public drawPicturePart(picture:Picture, sx:number, sy:number, sw:number, sh:number, x:number, y:number): void { };
-	public drawImage(image:HTMLImageElement, sx:number, sy:number, sw:number, sh:number, dx:number, dy:number, dw:number, dh:number): void { };
+	public drawPicture(picture: IPicture, x: number, y: number): void { };
+	public drawPicturePart(picture: IPicture, sx: number, sy: number, sw: number, sh: number, x: number, y: number): void { };
+	public drawImage(image: HTMLImageElement, sx: number, sy: number, sw: number, sh: number, dx: number, dy: number, dw: number, dh: number): void { };
 };

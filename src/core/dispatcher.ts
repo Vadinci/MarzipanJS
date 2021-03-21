@@ -6,7 +6,7 @@ type Listener = {
 
 type Callback = (...args: any[]) => void;
 
-class Dispatcher {
+export class Dispatcher {
     private _listeners: { [key: string]: Listener[] } = {};
     private _newKeys: string[] = [];
     private _cleanKeys: string[] = [];
@@ -85,5 +85,3 @@ class Dispatcher {
         }
     };
 };
-
-export default Dispatcher;

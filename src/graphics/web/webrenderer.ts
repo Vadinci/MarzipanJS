@@ -1,5 +1,3 @@
-import Matrix3 from '../../math/matrix3';
-import Vector2 from '../../math/vector2';
 
 /*
 TODO:
@@ -9,18 +7,19 @@ TODO:
 	Handle Resize
 */
 
-import ENSURE from '../../utils/ensure';
-import { Picture } from '../picture';
-import { Renderer, RendererSettings } from '../renderer';
+import { Matrix3 } from '../../math/matrix3';
+import { Vector2 } from '../../math/vector2';
+import { IPicture } from '../picture';
+import { Renderer, IRendererSettings } from '../renderer';
 
 const TODO = () => console.warn('todo');
 
-class WebRenderer extends Renderer {
+export class WebRenderer extends Renderer {
 	private _mainCanvas: HTMLCanvasElement;
 	private _currentCanvas: HTMLCanvasElement;
 	private _currentContext: CanvasRenderingContext2D;
 
-	constructor(settings: RendererSettings) {
+	constructor(settings: IRendererSettings) {
 		super(settings);
 
 		this._mainCanvas = this._screen.canvas;
@@ -96,17 +95,15 @@ class WebRenderer extends Renderer {
 
 	public drawPolygon = TODO;
 
-	public drawPicture(picture: Picture, x: number, y: number): void {
+	public drawPicture(picture: IPicture, x: number, y: number): void {
 		this._currentContext.drawImage(picture.image, picture.x, picture.y, picture.width, picture.height, x, y, picture.width, picture.height);
 	};
 
-	public drawPicturePart(picture:Picture, sx:number, sy:number, sw:number, sh:number, x:number, y:number):void {
+	public drawPicturePart(picture: IPicture, sx: number, sy: number, sw: number, sh: number, x: number, y: number): void {
 		this._currentContext.drawImage(picture.image, picture.x + sx, picture.y + sy, sw, sh, x, y, sw, sh);
 	};
 
-	public drawImage(image:HTMLImageElement, sx:number, sy:number, sw:number, sh:number, dx:number, dy:number, dw:number, dh:number) {
+	public drawImage(image: HTMLImageElement, sx: number, sy: number, sw: number, sh: number, dx: number, dy: number, dw: number, dh: number) {
 		this._currentContext.drawImage(image, sx, sy, sw, sh, dx, dy, dw, dh);
 	};
 };
-
-export default WebRenderer;

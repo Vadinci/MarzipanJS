@@ -1,51 +1,49 @@
-let _processor;
-let _groups = {};
-let _saveTasks = {};
+//TODO: work in progress
 
-let setProcessor = function (processor) {
-	_processor = processor;
-};
+export interface IStorageProcessor {
+	fetch(key: string, onComplete: (data: any) => void): void;
+	write(key: string, data: any): void;
+}
 
-let fetchGroup = function (group, onComplete) {
-	_processor.fetch(group, data => {
-		_groups[group] = data || {};
-		onComplete && onComplete();
-	});
-};
+export class PlayerData {
+	private _processor: IStorageProcessor;
+	private _groups: { [key: string]: { [key: string]: any } } = {};
+	private _saveTasks: { [key: string]: number } = {};
 
-let load = function (group, key) {
-	if (!_groups[group]) {
-		_groups[group] = {};
-		fetchGroup(group);
+	public setProcessor(processor: IStorageProcessor): void {
+		this._processor = processor;
 	}
-	return _groups[group][key];
-};
 
-let save = function (group, key, value) {
-	if (!_groups[group]) {
-		_groups[group] = {};
-		fetchGroup(group);
+	public fetchGroup(group: string, onComplete: () => void): void {
+		this._processor.fetch(group, data => {
+			this._groups[group] = data || {};
+			onComplete && onComplete();
+		});
 	}
-	_groups[group][key] = value;
-	_queueSaveTask(group);
-};
 
-//queues a save task, a few ms into the future. This prevents a lot of modifications to the same save group at once (i.e. when completing a level) creating a lot of upstreams,
-//while one would suffice
-let _queueSaveTask = function (group) {
-	if (_saveTasks[group]) return;
+	public load(group: string, key: string): any {
+		if (!this._groups[group]) {
+			this._groups[group] = {};
+			this.fetchGroup(group, () => { });
+		}
+		return this._groups[group][key];
+	}
 
-	_saveTasks[group] = window.setTimeout(() => {
-		_saveTasks[group] = undefined;
-		_processor.write(group, _groups[group]);
-	}, 10);
-};
+	public save(group: string, key: string, value: any): void {
+		if (!this._groups[group]) {
+			this._groups[group] = {};
+			this.fetchGroup(group, () => { });
+		}
+		this._groups[group][key] = value;
+		this._queueSaveTask(group);
+	}
 
-const PlayerData = {
-	setProcessor,
-	fetchGroup,
+	private _queueSaveTask(group: string): void {
+		if (this._saveTasks[group]) return;
 
-	load,
-	save
-};
-export default PlayerData;
+		this._saveTasks[group] = window.setTimeout(() => {
+			delete this._saveTasks[group];
+			this._processor.write(group, this._groups[group]);
+		}, 10);
+	}
+}

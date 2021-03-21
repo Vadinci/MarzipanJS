@@ -1,17 +1,30 @@
-let LocalStorageProcessor = function (settings) {
-	let _prefix = settings.prefix ? (settings.prefix + '_') : '';
-	let _mangle = settings.mangle !== void (0) ? settings.mangle : true;
+import { IStorageProcessor } from "../core/playerdata";
 
-	let fetch = function (key, onComplete) {
-		let raw = localStorage.getItem(_prefix + key);
+export interface ILocalStorageSettings {
+	prefix?: string;
+	mangle?: boolean;
+}
+
+export class LocalStorageProcessor implements IStorageProcessor {
+	private _prefix: string = "";
+	private _mangle: boolean = true;
+
+	constructor(settings: ILocalStorageSettings) {
+		this._prefix = settings.prefix ? (settings.prefix + "_") : ""
+		this._mangle = settings.mangle !== void (0) ? settings.mangle : true;
+	};
+
+
+	public fetch(key: string, onComplete: (data: any) => void): void {
+		let raw: string | null = localStorage.getItem(this._prefix + key);
 		if (!raw) {
-			onComplete();
+			onComplete(null);
 			return;
 		}
-		let data;
-		if (_mangle) {
-			let stringified = atob(raw);
-			data = JSON.parse(stringified);
+		let data: any;
+		if (this._mangle) {
+			let unmangled: string = atob(raw);
+			data = JSON.parse(unmangled);
 		} else {
 			data = JSON.parse(raw);;
 		}
@@ -19,19 +32,12 @@ let LocalStorageProcessor = function (settings) {
 		onComplete(data);
 	};
 
-	let write = function (key, data) {
-		let stringified = JSON.stringify(data);
-		let raw = stringified;
-		if (_mangle) raw = btoa(stringified);
+	public write = function (key: string, data: any): void {
+		let stringified: string = JSON.stringify(data);
+		let toSave: string = stringified;
+		if (this._mangle) toSave = btoa(stringified);
 
-		localStorage.setItem(_prefix + key, raw);
+		localStorage.setItem(this._prefix + key, toSave);
 	};
 
-
-	return {
-		fetch,
-		write
-	}
 };
-
-export default LocalStorageProcessor;

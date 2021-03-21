@@ -1,5 +1,3 @@
-class Color {
+export class Color {
 
 };
-
-export default Color;

@@ -1,13 +1,19 @@
-import AssetLoader from '../assetloader';
-import PlainLoader from './plainloader';
+import { IAssetLoader } from "../assetloader";
+import { PlainLoader } from "./plainloader";
 
-// let JsonLoader = function () {
-let JsonLoader = new AssetLoader({
-    name: 'json',
-    filetypes: ['json'],
-    load: function (path) {
+export class JsonLoader implements IAssetLoader {
+    public readonly name: string = "json";
+    public readonly filetypes: string[] = ["json"];
+
+    private _plainLoader: PlainLoader;
+
+    constructor() {
+        this._plainLoader = new PlainLoader();
+    }
+
+    load(path: string): Promise<any> {
         return new Promise((resolve, reject) => {
-            PlainLoader.load(path)
+            this._plainLoader.load(path)
                 .then(data => {
                     let jsonData = JSON.parse(data);
                     resolve(jsonData);
@@ -15,7 +21,5 @@ let JsonLoader = new AssetLoader({
                 .catch(e => reject(e));
         });
     }
-});
-// };
 
-export default JsonLoader;
+}

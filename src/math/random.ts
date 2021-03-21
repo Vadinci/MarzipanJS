@@ -2,7 +2,7 @@ const M = 0xffffffff; //modulus - 2^32 or 4 bytes
 const A = 1664525; //multiplier
 const C = 1013904223; //increment
 
-class Random {
+export class Random {
 	private _seed: number;
 	private _z: number;
 
@@ -86,6 +86,3 @@ class Random {
 		return this.float(0, Math.PI * 2);
 	};
 };
-
-
-export default Random;

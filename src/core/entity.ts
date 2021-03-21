@@ -1,7 +1,7 @@
-import Dispatcher from './dispatcher';
-import Transform from '../math/transform';
-import Scene from './scene';
-import Component from './component';
+import { Dispatcher } from './dispatcher';
+import { Transform } from '../math/transform';
+import { Scene } from './scene';
+import { Component } from './component';
 
 type EntitySettings = {
     name?: string;
@@ -11,7 +11,7 @@ type EntitySettings = {
     active?: boolean;
 };
 
-class Entity extends Dispatcher {
+export class Entity extends Dispatcher {
     private _components: Component[] = [];
     private _tags: string[] = [];
 
@@ -178,7 +178,7 @@ class Entity extends Dispatcher {
         tags.forEach(t => this.removeTag(t));
     };
 
-    public get scene():Scene | null { return this._scene; };
+    public get scene(): Scene | null { return this._scene; };
     public set scene(v: Scene | null) {
         if (this._scene && v !== null) throw new Error("can't set Scene twice. Entity needs to be removed first");
         this._scene = v;
@@ -204,7 +204,3 @@ class Entity extends Dispatcher {
             set: v => _transform.rotation = v
         } */
 };
-
-
-
-export default Entity;

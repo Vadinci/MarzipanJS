@@ -1,4 +1,4 @@
-class Vector2 {
+export class Vector2 {
 	public x: number = 0;
 	public y: number = 0;
 
@@ -150,7 +150,7 @@ class Vector2 {
 		return a.clone().normalize();
 	};
 
-	public static copy(other: Vector2): Vector2 {
+	public static clone(other: Vector2): Vector2 {
 		return new Vector2(other.x, other.y);
 	};
 
@@ -163,5 +163,3 @@ class Vector2 {
 	};
 	//#endregion
 };
-
-export default Vector2;

@@ -1,15 +1,15 @@
-import Dispatcher from "../core/dispatcher";
+import { Dispatcher } from "../core/dispatcher";
 
-type Resolution = {
+export interface IResolution {
 	width: number;
 	height: number;
 };
 
-type ScreenSettings = {
-	resolution: Resolution
+export interface IScreenSettings {
+	resolution: IResolution;
 };
 
-class Screen extends Dispatcher {
+export class Screen extends Dispatcher {
 	private _canvas: HTMLCanvasElement;
 
 	private _targetWidth: number = 480;
@@ -23,7 +23,7 @@ class Screen extends Dispatcher {
 
 	private _resizeTaskId: number | null = null;
 
-	public init(settings: ScreenSettings): void {
+	public init(settings: IScreenSettings): void {
 		this._canvas = document.createElement('canvas');
 		this._targetWidth = settings.resolution.width || 480;
 		this._targetHeight = settings.resolution.height || 640;
@@ -36,7 +36,7 @@ class Screen extends Dispatcher {
 		window.addEventListener('orientationchange', this._onResize.bind(this), false);
 	};
 
-	private _getWindowSize(): Resolution {
+	private _getWindowSize(): IResolution {
 		let windowSize = {
 			width: 0,
 			height: 0
@@ -116,5 +116,3 @@ class Screen extends Dispatcher {
 
 
 };
-
-export default Screen;
