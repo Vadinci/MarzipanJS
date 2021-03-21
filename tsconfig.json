@@ -3,10 +3,12 @@
         "outDir": "./dist",
         "allowJs": false,
         "target": "es6",
-        "strictNullChecks": true,
-        "moduleResolution": "node"
+        "moduleResolution": "node",
+        "declaration": true,
+        "declarationMap": true,
+        "removeComments": true
     },
-        "include": [
+    "include": [
         "./src/**/*"
     ]
 }
