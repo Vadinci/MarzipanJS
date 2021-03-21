@@ -2,14 +2,15 @@
   "name": "marzipan",
   "version": "0.0.0",
   "description": "",
-  "main": "dist/marzipan.js",
+  "main": "dist/index.js",
   "files": [
     "src/**/*",
     "dist/**/*"
   ],
   "private": true,
   "scripts": {
-    "build": "tsc"
+    "barrel": "node scripts/barrel.js",
+    "build": "node scripts/barrel.js && tsc"
   },
   "author": "",
   "license": "ISC",
