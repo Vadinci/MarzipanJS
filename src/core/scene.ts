@@ -1,6 +1,7 @@
 import { Dispatcher } from "./dispatcher";
 import { Transform } from "../math/transform";
 import { Entity } from "./entity";
+import { GameData } from "./engine";
 
 export interface ISceneSettings {
 	name?: string;
@@ -27,7 +28,7 @@ export class Scene extends Dispatcher {
 		if (settings.layer !== void (0)) this._layer = settings.layer;
 	};
 
-	public start(gameData: any): void {
+	public start(gameData: GameData): void {
 		this.emit('start');
 
 		this._handleAddList(gameData);
@@ -35,7 +36,7 @@ export class Scene extends Dispatcher {
 		this._sortEntities();
 	};
 
-	public update(gameData: any): void {
+	public update(gameData: GameData): void {
 		this.emit('preUpdate', gameData);
 
 		for (let ii = this._updateOrder.length - 1; ii >= 0; --ii) {
@@ -52,7 +53,7 @@ export class Scene extends Dispatcher {
 		this.emit('postUpdate', gameData);
 	};
 
-	public draw(gameData: any): void {
+	public draw(gameData: GameData): void {
 		this.emit('preDraw', gameData);
 
 		for (let ii = 0; ii < this._drawOrder.length; ii++) {
@@ -64,7 +65,7 @@ export class Scene extends Dispatcher {
 		this.emit('postDraw', gameData);
 	};
 
-	public drawDebug(gameData: any): void {
+	public drawDebug(gameData: GameData): void {
 		this.emit('preDrawDebug', gameData);
 
 		for (let ii = 0; ii < this._drawOrder.length; ii++) {
@@ -76,7 +77,7 @@ export class Scene extends Dispatcher {
 		this.emit('postDrawDebug', gameData);
 	};
 
-	public die(gameData: any): void {
+	public die(gameData: GameData): void {
 		this.emit('die');
 
 		this._handleAddList(gameData);
@@ -103,7 +104,7 @@ export class Scene extends Dispatcher {
 		this._removeList.push(entity);
 	};
 
-	public _handleAddList(gameData: any): void {
+	public _handleAddList(gameData: GameData): void {
 		for (let ii = 0; ii < this._addList.length; ii++) {
 			this._entities.push(this._addList[ii]);
 			gameData.entity = this._addList[ii];
@@ -119,7 +120,7 @@ export class Scene extends Dispatcher {
 		this._addList = [];
 	};
 
-	public _handleRemoveList(gameData) {
+	public _handleRemoveList(gameData: GameData) {
 		for (let ii = 0; ii < this._removeList.length; ii++) {
 			gameData.entity = this._removeList[ii];
 			this._removeList[ii].die(gameData);

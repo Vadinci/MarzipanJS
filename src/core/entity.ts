@@ -2,6 +2,7 @@ import { Dispatcher } from './dispatcher';
 import { Transform } from '../math/transform';
 import { Scene } from './scene';
 import { Component } from './component';
+import { GameData } from './engine';
 
 type EntitySettings = {
     name?: string;
@@ -38,21 +39,21 @@ export class Entity extends Dispatcher {
         //TODO components and tags
     };
 
-    public start(data): void {
+    public start(data: GameData): void {
         for (let ii = 0; ii < this._components.length; ii++) {
             let comp = this._components[ii];
             comp.start(data);
         }
     };
 
-    public die(data): void {
+    public die(data: GameData): void {
         for (let ii = 0; ii < this._components.length; ii++) {
             let comp = this._components[ii];
             comp.die(data);
         }
     };
 
-    public update(data): void {
+    public update(data: GameData): void {
         this._tick++;
 
         for (let ii = 0; ii < this._components.length; ii++) {
@@ -61,7 +62,7 @@ export class Entity extends Dispatcher {
         }
     };
 
-    public draw(data): void {
+    public draw(data: GameData): void {
         for (let ii = 0; ii < this._components.length; ii++) {
             let comp = this._components[ii];
             comp.preDraw(data);
@@ -79,7 +80,7 @@ export class Entity extends Dispatcher {
         }
     };
 
-    public drawDebug(data): void {
+    public drawDebug(data: GameData): void {
         for (let ii = 0; ii < this._components.length; ii++) {
             let comp = this._components[ii];
             comp.preDraw(data);

@@ -1,24 +1,25 @@
 {
-  "name": "marzipan",
+  "name": "@marzipan-games/marzipan",
   "version": "0.0.0",
   "description": "",
   "main": "dist/index.js",
   "files": [
-    "src/**/*",
-    "dist/**/*"
+    "src",
+    "dist"
   ],
   "private": false,
   "scripts": {
+    "test": "echo 'TODO' && exit 1",
     "barrel": "node scripts/barrel.js",
-    "build": "node scripts/barrel.js && tsc"
+    "build": "npm run barrel && tsc"
   },
-
   "author": "Robin Zaagsma <info@vadinci.net> (vadinci.net)",
   "homepage": "https://github.com/Vadinci/MarzipanJS",
   "license": "ISC",
   "devDependencies": {
-    "@types/js-yaml": "^4.0.0",
     "@types/howler": "^2.2.1",
+    "@types/js-yaml": "^4.0.0",
+    "np": "^7.4.0",
     "typescript": "^4.2.3"
   },
   "dependencies": {

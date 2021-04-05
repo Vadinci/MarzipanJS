@@ -124,7 +124,7 @@ export class Keyboard extends Dispatcher {
 	public keyPressed(keys: string | number | number[]): boolean {
 		let keyIndices: number[] = this.getBoundKeys(keys);
 		for (let ii = 0; ii < keyIndices.length; ii++) {
-			if (this._keyStates[keys[ii]].pressed) {
+			if (this._keyStates[keyIndices[ii]].pressed) {
 				return true;
 			}
 		}
@@ -134,7 +134,7 @@ export class Keyboard extends Dispatcher {
 	public keyDown(keys: string | number | number[]): boolean {
 		let keyIndices: number[] = this.getBoundKeys(keys);
 		for (let ii = 0; ii < keyIndices.length; ii++) {
-			if (this._keyStates[keys[ii]].down) {
+			if (this._keyStates[keyIndices[ii]].down) {
 				return true;
 			}
 		}
@@ -145,7 +145,7 @@ export class Keyboard extends Dispatcher {
 	public keyReleased(keys: string | number | number[]): boolean {
 		let keyIndices: number[] = this.getBoundKeys(keys);
 		for (let ii = 0; ii < keyIndices.length; ii++) {
-			if (this._keyStates[keys[ii]].released) {
+			if (this._keyStates[keyIndices[ii]].released) {
 				return true;
 			}
 		}

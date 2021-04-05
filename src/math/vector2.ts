@@ -89,11 +89,11 @@ export class Vector2 {
 	//#endregion
 
 
-	public dot(other): number {
+	public dot(other:Vector2): number {
 		return this.x * other.x + this.y * other.y;
 	};
 
-	public cross(other): number {
+	public cross(other: Vector2): number {
 		return this.x * other.y - this.y * other.x;
 	};
 

@@ -32,7 +32,7 @@ export class Pointer {
 
 
 export class Touch extends Dispatcher {
-	private _pointers = {};
+	private _pointers: { [key: number]: Pointer } = {};
 
 	private _mouseState: MouseState = MouseState.UP;
 	private _mousePos: Vector2 = new Vector2(0, 0);
@@ -159,7 +159,7 @@ export class Touch extends Dispatcher {
 		this._updatePointer(MOUSE_ID, this._mousePos.x, this._mousePos.y);
 	};
 
-	private _onMouseUp(evt) {
+	private _onMouseUp(evt: MouseEvent) {
 		evt.preventDefault();
 
 		this._mouseState = MouseState.UP;

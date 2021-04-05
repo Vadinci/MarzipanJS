@@ -2,13 +2,14 @@
     "compilerOptions": {
         "outDir": "./dist",
         "allowJs": false,
-        "target": "es6",
+        "target": "es5",
         "moduleResolution": "node",
         "declaration": true,
         "declarationMap": true,
-        "removeComments": true
+        "removeComments": true,
+        "noImplicitAny": true
     },
     "include": [
-        "./src/**/*"
+        "./src/**/*.ts"
     ]
 }

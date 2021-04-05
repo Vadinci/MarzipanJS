@@ -48,7 +48,7 @@ export class Dispatcher {
         //deregisters itself the first time it's called
         let wrapper = function () {
             this.off(key, wrapper);
-            return cb.apply(context, [...arguments]);
+            return cb.apply(context, arguments);
         }
 
         this.on(key, wrapper, context);
@@ -71,7 +71,7 @@ export class Dispatcher {
         }
     };
 
-    public emit(key, data?: any, preventCancel: boolean = false): void {
+    public emit(key: string, data?: any, preventCancel: boolean = false): void {
         let list = this._listeners[key];
         if (!list) return;
 

@@ -2,13 +2,15 @@ import { Dispatcher } from './dispatcher';
 import { Marzipan } from '../marzipan';
 import { Matrix3 } from '../math/matrix3';
 import { Scene } from './scene';
+import { Entity } from './entity';
 
-type GameData = {
+export type GameData = {
     currentTime: number;
     runningTime: number;
     deltaTime: number;
     frame: number;
     ticks: number;
+    entity?: Entity;
 };
 
 export class Engine extends Dispatcher {

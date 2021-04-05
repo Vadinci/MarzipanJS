@@ -45,7 +45,7 @@ export class Matrix3 {
         return other.copy(this);
     };
 
-    public static multiply(matA, matB): Matrix3 {
+    public static multiply(matA: Matrix3, matB: Matrix3): Matrix3 {
         let dest = new Matrix3();
 
         let xx: number;
@@ -57,9 +57,9 @@ export class Matrix3 {
             for (yy = 0; yy < 3; yy++) {
                 sum = 0;
                 for (zz = 0; zz < 3; zz++) {
-                    sum += matA[xx + zz * 3] * matB[zz + yy * 3];
+                    sum += matA.mat[xx + zz * 3] * matB.mat[zz + yy * 3];
                 }
-                dest[xx + yy * 3] = sum;
+                dest.mat[xx + yy * 3] = sum;
             }
         }
 
@@ -68,8 +68,8 @@ export class Matrix3 {
 
     public static translate(mat: Matrix3, x: number, y: number): Matrix3 {
         let trans = new Matrix3();
-        trans[C20] = x;
-        trans[C21] = y;
+        trans.mat[C20] = x;
+        trans.mat[C21] = y;
 
         return Matrix3.multiply(trans, mat);
     };
@@ -83,10 +83,10 @@ export class Matrix3 {
 
         let rot = new Matrix3();
 
-        rot[C00] = cos;
-        rot[C01] = sin;
-        rot[C10] = -sin;
-        rot[C11] = cos;
+        rot.mat[C00] = cos;
+        rot.mat[C01] = sin;
+        rot.mat[C10] = -sin;
+        rot.mat[C11] = cos;
 
         return Matrix3.multiply(rot, mat);
     };
@@ -98,8 +98,8 @@ export class Matrix3 {
     public static scale(mat: Matrix3, x: number, y: number): Matrix3 {
         let scale = new Matrix3();
 
-        scale[C00] = x;
-        scale[C11] = y;
+        scale.mat[C00] = x;
+        scale.mat[C11] = y;
 
         return Matrix3.multiply(scale, mat);
     };
@@ -110,20 +110,20 @@ export class Matrix3 {
 
     public static multiplyVectorDirect(mat: Matrix3, vector: Vector2): Vector2 {
         //z is 0
-        vector.x = mat[C00] * vector.x + mat[C01] * vector.x + mat[C02] * vector.x + mat[C20];
-        vector.y = mat[C10] * vector.y + mat[C11] * vector.y + mat[C12] * vector.y + mat[C21];
+        vector.x = mat.mat[C00] * vector.x + mat.mat[C01] * vector.x + mat.mat[C02] * vector.x + mat.mat[C20];
+        vector.y = mat.mat[C10] * vector.y + mat.mat[C11] * vector.y + mat.mat[C12] * vector.y + mat.mat[C21];
 
         return vector;
     };
 
     public static determinant(mat: Matrix3): number {
-        let sum = mat[C00] * mat[C11] * mat[C22];
-        sum += mat[C10] * mat[C21] * mat[C02];
-        sum += mat[C20] * mat[C01] * mat[C12];
+        let sum = mat.mat[C00] * mat.mat[C11] * mat.mat[C22];
+        sum += mat.mat[C10] * mat.mat[C21] * mat.mat[C02];
+        sum += mat.mat[C20] * mat.mat[C01] * mat.mat[C12];
 
-        sum -= mat[C20] * mat[C11] * mat[C02];
-        sum -= mat[C10] * mat[C01] * mat[C22];
-        sum -= mat[C00] * mat[C21] * mat[C12];
+        sum -= mat.mat[C20] * mat.mat[C11] * mat.mat[C02];
+        sum -= mat.mat[C10] * mat.mat[C01] * mat.mat[C22];
+        sum -= mat.mat[C00] * mat.mat[C21] * mat.mat[C12];
 
         return sum;
     };
@@ -136,19 +136,20 @@ export class Matrix3 {
         }
         let factor = 1 / det;
         let result = new Matrix3();
+        let matAccesor = mat.mat;
         let resultAccesor = result.mat;
 
-        resultAccesor[C00] = factor * (mat[C22] * mat[C11] - mat[C12] * mat[C21]);
-        resultAccesor[C10] = factor * (mat[C12] * mat[C20] - mat[C22] * mat[C10]);
-        resultAccesor[C20] = factor * (mat[C21] * mat[C10] - mat[C11] * mat[C20]);
+        resultAccesor[C00] = factor * (matAccesor[C22] * matAccesor[C11] - matAccesor[C12] * matAccesor[C21]);
+        resultAccesor[C10] = factor * (matAccesor[C12] * matAccesor[C20] - matAccesor[C22] * matAccesor[C10]);
+        resultAccesor[C20] = factor * (matAccesor[C21] * matAccesor[C10] - matAccesor[C11] * matAccesor[C20]);
 
-        resultAccesor[C01] = factor * (mat[C02] * mat[C21] - mat[C22] * mat[C01]);
-        resultAccesor[C11] = factor * (mat[C22] * mat[C00] - mat[C02] * mat[C20]);
-        resultAccesor[C21] = factor * (mat[C01] * mat[C20] - mat[C21] * mat[C00]);
+        resultAccesor[C01] = factor * (matAccesor[C02] * matAccesor[C21] - matAccesor[C22] * matAccesor[C01]);
+        resultAccesor[C11] = factor * (matAccesor[C22] * matAccesor[C00] - matAccesor[C02] * matAccesor[C20]);
+        resultAccesor[C21] = factor * (matAccesor[C01] * matAccesor[C20] - matAccesor[C21] * matAccesor[C00]);
 
-        resultAccesor[C02] = factor * (mat[C12] * mat[C01] - mat[C02] * mat[C11]);
-        resultAccesor[C12] = factor * (mat[C02] * mat[C10] - mat[C12] * mat[C00]);
-        resultAccesor[C22] = factor * (mat[C11] * mat[C00] - mat[C01] * mat[C10]);
+        resultAccesor[C02] = factor * (matAccesor[C12] * matAccesor[C01] - matAccesor[C02] * matAccesor[C11]);
+        resultAccesor[C12] = factor * (matAccesor[C02] * matAccesor[C10] - matAccesor[C12] * matAccesor[C00]);
+        resultAccesor[C22] = factor * (matAccesor[C11] * matAccesor[C00] - matAccesor[C01] * matAccesor[C10]);
 
         return result;
     };
