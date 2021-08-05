@@ -4,7 +4,7 @@ type Listener = {
     __active: boolean
 };
 
-type Callback = (...args: any[]) => void;
+type Callback = (...args: any[]) => void | boolean;
 
 export class Dispatcher {
     private _listeners: { [key: string]: Listener[] } = {};
@@ -46,15 +46,16 @@ export class Dispatcher {
 
     public once(key: string, cb: Callback, context?: any): void {
         //deregisters itself the first time it's called
+        let self: this = this;
         let wrapper = function () {
-            this.off(key, wrapper);
-            return cb.apply(context, arguments);
-        }
+            self.off(key, wrapper, context);
+            return cb.apply(context, Array.from(arguments));
+        };
 
         this.on(key, wrapper, context);
     };
 
-    public off(key: string, cb: Callback, context: any | null): void {
+    public off(key: string, cb: Callback, context: any | null = null): void {
         var list = this._listeners[key];
         if (!list) return;
 
@@ -77,10 +78,10 @@ export class Dispatcher {
 
         this._cleanListeners(key);
 
-        let doCancel;
+        let doCancel: boolean;
         for (let ii = 0; ii < list.length; ii++) {
             if (list[ii].__active === false) continue;
-            doCancel = list[ii].callback.call(list[ii].context, data);
+            doCancel = !!list[ii].callback.call(list[ii].context, data);
             if (doCancel && !preventCancel) break;
         }
     };

@@ -23,8 +23,12 @@ export class Screen extends Dispatcher {
 
 	private _resizeTaskId: number | null = null;
 
-	public init(settings: IScreenSettings): void {
+	constructor() {
+		super();
 		this._canvas = document.createElement('canvas');
+	}
+
+	public init(settings: IScreenSettings): void {
 		this._targetWidth = settings.resolution.width || 480;
 		this._targetHeight = settings.resolution.height || 640;
 

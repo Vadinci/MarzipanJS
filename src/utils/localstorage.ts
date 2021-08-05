@@ -32,7 +32,7 @@ export class LocalStorageProcessor implements IStorageProcessor {
 		onComplete(data);
 	};
 
-	public write = function (key: string, data: any): void {
+	public write(key: string, data: any): void {
 		let stringified: string = JSON.stringify(data);
 		let toSave: string = stringified;
 		if (this._mangle) toSave = btoa(stringified);

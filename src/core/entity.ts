@@ -140,7 +140,9 @@ export class Entity extends Dispatcher {
             console.warn('component ' + component.name + ' was not added to entity ' + self.name);
             return;
         }
-        if (component.die) component.die.call(component);
+        if (component.die) component.die({
+            entity: self
+        });
         this._components.splice(idx, 1);
     };
 

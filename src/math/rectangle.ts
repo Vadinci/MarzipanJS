@@ -3,10 +3,10 @@
 import { Vector2 } from "./vector2";
 
 export class Rectangle {
-	public x: number;
-	public y: number;
-	public width: number;
-	public height: number;
+	public x!: number;
+	public y!: number;
+	public width!: number;
+	public height!: number;
 
 	constructor(x = 0, y = 0, width = 1, height = 1) {
 		this.set(x, y, width, height);

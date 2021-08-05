@@ -3,8 +3,8 @@ const A = 1664525; //multiplier
 const C = 1013904223; //increment
 
 export class Random {
-	private _seed: number;
-	private _z: number;
+	private _seed!: number;
+	private _z!: number;
 
 	constructor(seed?: number) {
 		if (seed === void (0)) {

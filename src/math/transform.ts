@@ -96,7 +96,7 @@ export class Transform {
      * Why does the multiply vector with point not work? Is it because we shouldn't be using a 3x3 matrix?
      * is the implemenntation of inverse() or multiplyVector() broken?
      */
-    public toLocalPoint = function (p: Vector2): Vector2 {
+    public toLocalPoint(p: Vector2): Vector2 {
         this.recalculateMatrix();
 
         let m = this._globalMatrix;
@@ -110,10 +110,10 @@ export class Transform {
 
         let x = p.x;
         let y = p.y;
-        let determinant = 1 / (m[a] * m[d] - m[c] * m[b]);
+        let determinant = 1 / (m.mat[a] * m.mat[d] - m.mat[c] * m.mat[b]);
 
-        let rx = m[d] * x * determinant - m[c] * y * determinant + (m[ty] * m[c] - m[tx] * m[d]) * determinant;
-        let ry = m[a] * y * determinant - m[b] * x * determinant + (-m[ty] * m[a] + m[tx] * m[b]) * determinant;
+        let rx = m.mat[d] * x * determinant - m.mat[c] * y * determinant + (m.mat[ty] * m.mat[c] - m.mat[tx] * m.mat[d]) * determinant;
+        let ry = m.mat[a] * y * determinant - m.mat[b] * x * determinant + (-m.mat[ty] * m.mat[a] + m.mat[tx] * m.mat[b]) * determinant;
 
         return new Vector2(rx, ry);
     };

@@ -102,7 +102,7 @@ export class Touch extends Dispatcher {
 
 		let pointer = this._pointers[id];
 
-		this._pointers[id] = undefined;
+		delete this._pointers[id];
 		this.emit('end', pointer);
 	};
 

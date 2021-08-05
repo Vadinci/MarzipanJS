@@ -3,6 +3,7 @@ import { Marzipan } from '../marzipan';
 import { Matrix3 } from '../math/matrix3';
 import { Scene } from './scene';
 import { Entity } from './entity';
+import { Renderer } from '../graphics';
 
 export type GameData = {
     currentTime: number;
@@ -10,6 +11,7 @@ export type GameData = {
     deltaTime: number;
     frame: number;
     ticks: number;
+    renderer?: Renderer;
     entity?: Entity;
 };
 
@@ -35,7 +37,7 @@ export class Engine extends Dispatcher {
     private _scenes: Scene[] = [];
     private _addList: Scene[] = [];
     private _removeList: Scene[] = [];
-    private loop: FrameRequestCallback;
+    private loop!: FrameRequestCallback;
 
     private tick(): void {
         let deltaTime;
@@ -90,7 +92,7 @@ export class Engine extends Dispatcher {
         this.emit('postUpdate', gameData);
     };
 
-    private draw = function (): void {
+    private draw(): void {
         let gameData = this._getGameData();
         gameData.renderer = Marzipan.renderer;
 
@@ -106,7 +108,7 @@ export class Engine extends Dispatcher {
         this.emit('postDraw', gameData);
     };
 
-    private drawDebug = function (): void {
+    private drawDebug(): void {
         let gameData = this._getGameData();
         gameData.renderer = Marzipan.renderer;
 

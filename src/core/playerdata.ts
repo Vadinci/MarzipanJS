@@ -6,7 +6,7 @@ export interface IStorageProcessor {
 }
 
 export class PlayerData {
-	private _processor: IStorageProcessor;
+	private _processor: IStorageProcessor | undefined;
 	private _groups: { [key: string]: { [key: string]: any } } = {};
 	private _saveTasks: { [key: string]: number } = {};
 
@@ -15,6 +15,10 @@ export class PlayerData {
 	}
 
 	public fetchGroup(group: string, onComplete: () => void): void {
+		if (!this._processor) {
+			throw new Error("processor has not been provided");
+		}
+
 		this._processor.fetch(group, data => {
 			this._groups[group] = data || {};
 			onComplete && onComplete();
@@ -41,9 +45,13 @@ export class PlayerData {
 	private _queueSaveTask(group: string): void {
 		if (this._saveTasks[group]) return;
 
+		if (!this._processor) {
+			throw new Error("processor has not been provided");
+		}
+
 		this._saveTasks[group] = window.setTimeout(() => {
 			delete this._saveTasks[group];
-			this._processor.write(group, this._groups[group]);
+			this._processor!.write(group, this._groups[group]);
 		}, 10);
 	}
 }
