@@ -15,7 +15,7 @@
   "devDependencies": {},
   "dependencies": {
     "howler": "^2.1.3",
-    "rollup": "^2.0.2",
+    "rollup": "^2.79.2",
     "yaml-js": "^0.2.3"
   }
 }
